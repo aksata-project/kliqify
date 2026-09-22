@@ -128,4 +128,4 @@ Jika ingin menghubungkan proyek ke database Google Spreadsheet milik Anda sendir
 
 ## 📄 Lisensi
 
-Proyek ini dikembangkan oleh **Cokro Aksata Nusantara**.
+Proyek ini dikembangkan oleh **Cokroweb Digital**.
