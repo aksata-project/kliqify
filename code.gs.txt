@@ -1,0 +1,1934 @@
+/**
+ * SHORTLINK SYSTEM - CODE.GS
+ * Fitur:
+ * 1. Generate shortlink otomatis dengan tracking user
+ * 2. Simpan ke spreadsheet dengan data lengkap
+ * 3. Ambil shortlink berdasarkan user
+ */
+
+// Note: CONFIG and helper functions are now in setup.gs
+
+// ========== CORE FUNCTIONS ========== //
+
+function getSheet() {
+  const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  let sheet = ss.getSheetByName(CONFIG.SHEET_SHORTLINKS);
+  
+  if (!sheet) {
+    sheet = ss.insertSheet(CONFIG.SHEET_SHORTLINKS);
+    sheet.appendRow(CONFIG.COLUMNS_SHORTLINK); 
+    sheet.deleteRows(2, sheet.getMaxRows() - 1); // Clean up empty rows
+  }
+  return sheet;
+}
+
+function generateCode() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < 6; i++) { // Panjang kode dinaikkan jadi 6 karakter
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
+function createShortlink(url, username = null) {
+  try {
+    if (!url) throw new Error('URL tidak boleh kosong');
+    
+    // Validasi URL Strict (mencegah teks asal seperti "hai")
+    const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([^\s]*)$/i;
+    if (!urlPattern.test(url)) {
+      throw new Error('URL tidak valid. Pastikan ada ekstensi domain seperti .com, .id, dll.');
+    }
+
+    // Tambahkan https:// jika belum ada
+    if (!/^https?:\/\//i.test(url)) {
+      url = 'https://' + url;
+    }
+    
+    const sheet = getSheet();
+    
+    // Check for existing shortlink for this exact URL and username
+    const data = sheet.getDataRange().getValues();
+    if (data.length > 1) {
+      const headers = data[0];
+      const urlCol = findColumnIndex(headers, ['Original URL', 'Link Origin', 'URL']);
+      const shortcodeCol = findColumnIndex(headers, ['Shortlink', 'Shortcode']);
+      const userCol = findColumnIndex(headers, ['Pembuat', 'CreatedBy']);
+      const timestampCol = findColumnIndex(headers, ['Timestamp']);
+      
+      if (urlCol !== -1 && shortcodeCol !== -1) {
+        const checkUser = (username || 'SYSTEM').toLowerCase().trim();
+        const checkUrl = url.toLowerCase().trim();
+        
+        // Anti-spam metrics
+        const now = new Date();
+        const oneMinuteAgo = new Date(now.getTime() - 60000); // 1 minute in milliseconds
+        const todayStr = Utilities.formatDate(now, Session.getScriptTimeZone(), "yyyy-MM-dd");
+        let userLinksToday = 0;
+        
+        for (let i = data.length - 1; i >= 1; i--) {
+          const rowUrl = String(data[i][urlCol] || '').toLowerCase().trim();
+          let rowUser = 'system';
+          if (userCol !== -1) {
+             rowUser = String(data[i][userCol] || '').toLowerCase().trim();
+          }
+          
+          let rowDateStr = "";
+          let rowDateObj = null;
+          if (timestampCol !== -1 && data[i][timestampCol]) {
+             try {
+                rowDateObj = new Date(data[i][timestampCol]);
+                rowDateStr = Utilities.formatDate(rowDateObj, Session.getScriptTimeZone(), "yyyy-MM-dd");
+             } catch(e) {}
+          }
+          
+          // Anti-Spam Validation (hanya untuk user yang login, SYSTEM diabaikan dari limit harian, max 1m untuk cegah flood)
+          if (rowUser === checkUser) {
+             // 1. Cooldown Check (1 menit)
+             if (rowDateObj && rowDateObj > oneMinuteAgo) {
+                 return {
+                    success: false,
+                    message: "Harap tunggu 1 menit sebelum membuat shortlink baru untuk mencegah spam!"
+                 };
+             }
+             
+             // 2. Daily Limit Check (Max 20 per hari untuk user terdaftar)
+             if (rowDateStr === todayStr && checkUser !== 'system') {
+                 userLinksToday++;
+             }
+          }
+          
+          if (userLinksToday >= 20) {
+             return {
+                 success: false,
+                 message: "Anda telah mencapai batas maksimal pembuatan shortlink hari ini (20 link)."
+             };
+          }
+          
+          // Duplicate URL Check
+          if (rowUrl === checkUrl && rowUser === checkUser && data[i][shortcodeCol]) {
+             const existingShortcode = data[i][shortcodeCol];
+             return {
+                success: true,
+                shortlink: CONFIG.DOMAIN + existingShortcode,
+                shortcode: existingShortcode,
+                message: "Shortlink sudah pernah dibuat sebelumnya.",
+                timestamp: new Date().toISOString()
+             };
+          }
+        }
+      }
+    }
+
+    const shortCode = generateCode();
+    const shortlink = CONFIG.DOMAIN + shortCode; // URL lengkap untuk ditampilkan
+    const timestamp = new Date();
+    
+    // Format data sesuai kolom - simpan hanya shortcode
+    const rowData = [
+      url,
+      shortCode, // Simpan hanya shortcode, bukan URL lengkap
+      username || 'SYSTEM',
+      Utilities.formatDate(timestamp, Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm:ss")
+    ];
+    
+    sheet.appendRow(rowData);
+    
+    // Check how many links they have made so far (to give creation rewards)
+    if (username && username !== 'SYSTEM') {
+      try {
+        const linkCount = countUserShortlinks(username, sheet);
+        
+        if (linkCount === 1) {
+          // 1st Link: 1 View + 95 Rp
+          grantCreationReward(username, 1, 95);
+        } else if (linkCount === 2) {
+          // 2nd Link: 1 View + 35 Rp
+          grantCreationReward(username, 1, 35);
+        }
+      } catch (err) {
+        console.warn("Error granting creation reward:", err);
+      }
+    }
+    
+    return {
+      success: true,
+      shortlink: shortlink, // Tampilkan URL lengkap ke user
+      shortcode: shortCode, // Juga kembalikan shortcode saja
+      message: "Shortlink berhasil dibuat!",
+      timestamp: timestamp.toISOString()
+    };
+  } catch (error) {
+    console.error('Error in createShortlink:', error);
+    return {
+      success: false,
+      message: error.message || 'Gagal membuat shortlink'
+    };
+  }
+}
+
+/**
+ * Counts how many shortlinks a user has created.
+ */
+function countUserShortlinks(username, sheet) {
+  if (!username) return 0;
+  const data = sheet.getDataRange().getValues();
+  if (data.length < 2) return 0;
+  
+  const headers = data[0];
+  const userCol = findColumnIndex(headers, ['Pembuat', 'CreatedBy']);
+  if (userCol === -1) return 0;
+  
+  let count = 0;
+  const uLower = String(username).toLowerCase().trim();
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][userCol]).toLowerCase().trim() === uLower) {
+      count++;
+    }
+  }
+  return count;
+}
+
+/**
+ * Grants an exact View and Balance reward when the user creates a link.
+ */
+function grantCreationReward(username, addViews, addEarn) {
+  if (!username) return;
+
+  const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(CONFIG.SHEET_MASTER);
+  if (!sheet) return;
+
+  const data = sheet.getDataRange().getValues();
+  if (data.length < 2) return;
+
+  const headers = data[0];
+  const userCol = findColumnIndex(headers, CONFIG.COLS_USERS.USERNAME);
+  const viewTodayCol = findColumnIndex(headers, CONFIG.COLS_USERS.VIEW_TODAY);
+  const totalViewCol = findColumnIndex(headers, CONFIG.COLS_USERS.TOTAL_VIEW);
+  const todayEarnCol = findColumnIndex(headers, CONFIG.COLS_USERS.TODAY_EARN);
+  const balanceCol = findColumnIndex(headers, CONFIG.COLS_USERS.BALANCE);
+
+  if (userCol === -1 || viewTodayCol === -1 || totalViewCol === -1 || todayEarnCol === -1 || balanceCol === -1) {
+    return; 
+  }
+
+  const uLower = String(username).toLowerCase().trim();
+
+  for (let i = 1; i < data.length; i++) {
+      if (String(data[i][userCol]).toLowerCase().trim() === uLower) {
+         const currentViewToday = parseFloat(data[i][viewTodayCol]) || 0;
+         const currentTotalView = parseFloat(data[i][totalViewCol]) || 0;
+         const currentTodayEarn = parseFloat(data[i][todayEarnCol]) || 0;
+         const currentBalance = parseFloat(data[i][balanceCol]) || 0;
+
+         sheet.getRange(i + 1, viewTodayCol + 1).setValue(currentViewToday + addViews);
+         sheet.getRange(i + 1, totalViewCol + 1).setValue(currentTotalView + addViews);
+         sheet.getRange(i + 1, todayEarnCol + 1).setValue(currentTodayEarn + addEarn);
+         sheet.getRange(i + 1, balanceCol + 1).setValue(currentBalance + addEarn);
+
+         SpreadsheetApp.flush();
+         break;
+      }
+  }
+}
+
+// ========== GETTER FUNCTIONS ========== //
+
+function handleShortlinkRedirect(shortCode) {
+  try {
+    const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+    const sheet = ss.getSheetByName(CONFIG.SHEET_SHORTLINKS);
+    if (!sheet) return HtmlService.createHtmlOutput('<h1>Error: Sheet not found</h1>');
+    
+    const data = sheet.getDataRange().getValues();
+    const headers = data[0];
+    
+    const urlCol = findColumnIndex(headers, 'Link Origin');
+    const shortcodeCol = findColumnIndex(headers, 'Shortlink');
+    
+    if (urlCol === -1 || shortcodeCol === -1) {
+      return HtmlService.createHtmlOutput('<h1>Error: Invalid spreadsheet format</h1>');
+    }
+    
+    // Search for the shortcode (case-sensitive)
+    for (let i = 1; i < data.length; i++) {
+      const storedShortcode = data[i][shortcodeCol];
+      if (storedShortcode && storedShortcode === shortCode) {
+        let originalUrl = String(data[i][urlCol] || '').trim();
+        
+        if (!originalUrl) {
+          return HtmlService.createHtmlOutput('<h1>Error: Invalid original URL (Empty)</h1>');
+        }
+        
+        if (!originalUrl.toLowerCase().startsWith('http://') && !originalUrl.toLowerCase().startsWith('https://')) {
+          originalUrl = 'https://' + originalUrl;
+        }
+        
+        return HtmlService.createHtmlOutput(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Redirecting...</title>
+              <meta http-equiv="refresh" content="0;url=${originalUrl}" />
+              <script>window.location.href = "${originalUrl}";</script>
+            </head>
+            <body><p>Redirecting to <a href="${originalUrl}">${originalUrl}</a>...</p></body>
+          </html>
+        `);
+      }
+    }
+    
+    return HtmlService.createHtmlOutput('<h1>Error: Shortlink not found</h1>');
+    
+  } catch (error) {
+    console.error('Error in handleShortlinkRedirect:', error);
+    return HtmlService.createHtmlOutput('<h1>Error: Server error occurred</h1>');
+  }
+}
+
+// JSON-returning shortlink resolver for the continue page (called via doPost)
+function resolveShortlink(shortCode) {
+  try {
+    if (!shortCode) return { success: false, message: 'No shortcode provided' };
+
+    const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+    const sheet = ss.getSheetByName(CONFIG.SHEET_SHORTLINKS);
+    if (!sheet) return { success: false, message: 'Sheet not found' };
+
+    const data = sheet.getDataRange().getValues();
+    const headers = data[0];
+
+    const urlCol = findColumnIndex(headers, 'Link Origin');
+    const shortcodeCol = findColumnIndex(headers, 'Shortlink');
+    const usernameCol = findColumnIndex(headers, 'Pembuat');
+
+    if (urlCol === -1 || shortcodeCol === -1) {
+      return { success: false, message: 'Invalid spreadsheet format' };
+    }
+
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][shortcodeCol] && data[i][shortcodeCol] === shortCode) {
+        let originalUrl = String(data[i][urlCol] || '').trim();
+
+        if (!originalUrl) {
+          return { success: false, message: 'Invalid destination URL (Empty)' };
+        }
+        
+        if (!originalUrl.toLowerCase().startsWith('http://') && !originalUrl.toLowerCase().startsWith('https://')) {
+          originalUrl = 'https://' + originalUrl;
+        }
+
+        // Increment view count for the shortlink owner
+        const owner = usernameCol !== -1 ? data[i][usernameCol] : null;
+        if (owner) {
+          try {
+            recordViewAndBonus(owner);
+          } catch(e) {
+            console.warn('recordViewAndBonus failed for', owner, e);
+          }
+        }
+
+        return { success: true, url: originalUrl };
+      }
+    }
+
+    return { success: false, message: 'Shortlink not found' };
+  } catch (error) {
+    console.error('Error in resolveShortlink:', error);
+    return { success: false, message: 'Server error: ' + error.message };
+  }
+}
+
+// ========== API ENDPOINTS ========== //
+
+function processShortlinkRequest(data) {
+  try {
+    if (!data || !data.action) {
+      throw new Error('Invalid request format');
+    }
+    
+    const username = data.username || null;
+    
+    switch (data.action) {
+      case "create":
+        if (!data.url) throw new Error('URL diperlukan');
+        return createShortlink(data.url, username);
+        
+      case "getLast":
+        if (!username) throw new Error('Username diperlukan');
+        const lastLink = getUserLastShortlink(username);
+        return {
+          success: true,
+          data: lastLink,
+          message: lastLink ? "Shortlink ditemukan" : "Tidak ada history shortlink"
+        };
+        
+      default:
+        throw new Error('Aksi tidak dikenali');
+    }
+  } catch (error) {
+    console.error('Error in processShortlinkRequest:', error);
+    return {
+      success: false,
+      message: error.message || 'Terjadi kesalahan server'
+    };
+  }
+}
+
+// getDashboardData is now consolidated at the bottom of the file
+
+
+// Legacy endpoint (deprecated)
+function processRequest(data) {
+  console.warn('Deprecated: processRequest called, use processShortlinkRequest instead');
+  return processShortlinkRequest(data);
+}
+
+// ========== UTILITIES ========== //
+
+function clearTestData() {
+  // Hanya untuk development - hapus data test
+  const sheet = getSheet();
+  if (sheet.getLastRow() > 1) {
+    sheet.deleteRows(2, sheet.getLastRow() - 1);
+  }
+  return { success: true, message: 'Data telah dibersihkan' };
+}
+
+// Helper to safely get App URL
+function getAppUrl() {
+  try {
+    const url = ScriptApp.getService().getUrl();
+    if (url) return url;
+  } catch (e) {
+    console.warn('ScriptApp.getService().getUrl() failed:', e);
+  }
+  return 'https://script.google.com/macros/s/' + ScriptApp.getScriptId() + '/dev'; // Default to dev for testing, or exec
+}
+
+// --- POST HANDLER FOR SPA PROXY (CORS) ---
+function doPost(e) {
+  try {
+    const payload = JSON.parse(e.postData.contents);
+    const action = payload.action;
+    const parameters = payload.parameters || [];
+    
+    // Validate Action
+    if (!action || typeof this[action] !== 'function') {
+      console.warn(`Attempted invalid action: ${action}`);
+      throw new Error('Permintaan tidak valid.');
+    }
+    
+    // Execute requested function
+    const result = this[action].apply(this, parameters);
+    
+    // Return standard JSON response
+    return ContentService.createTextOutput(JSON.stringify(result))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    console.error("doPost Error:", error);
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      message: error.message || 'Terjadi kesalahan pada server.'
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// Main entry point with iframe support
+function doGet(e) {
+  const page = e.parameter.page;
+  const username = e.parameter.user;
+  const appUrl = getAppUrl();
+  
+  // Route to Dashboard only if page=dashboard AND username is provided
+  if (page === 'dashboard' && username) {
+    const template = 'Dashboard';
+    const htmlOutput = HtmlService.createTemplateFromFile(template);
+    
+    htmlOutput.appUrl = appUrl;
+    htmlOutput.data = {
+      user: username,
+      isIframe: e.parameter.iframe === 'true',
+      appUrl: appUrl
+    };
+    
+    htmlOutput.userData = getUserData(username);
+    
+    // Redirect back to login if user not found (security)
+    if (!htmlOutput.userData) {
+      return HtmlService.createTemplateFromFile('login-register')
+        .evaluate()
+        .setTitle('Kliqify | Masuk')
+        .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
+        .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+    }
+
+    // Log snapshot on load (important to catch initial view)
+    logHistorySnapshot(username, htmlOutput.userData.View_Today || 0, htmlOutput.userData.Today_Earn || 0);
+    
+    htmlOutput.chartData = generateChartData(htmlOutput.userData.View_Today || 0, htmlOutput.userData.Today_Earn || 0, username);
+    htmlOutput.historyData = getHistoryData(username); // Pass real history to template
+    
+    return htmlOutput.evaluate()
+      .setTitle('Dashboard - ' + username)
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
+      .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+  }
+
+  // Route to Login/Register Page
+  if (page === 'login' || page === 'register') {
+    const authTemplate = HtmlService.createTemplateFromFile('login-register');
+    authTemplate.appUrl = appUrl;
+    return authTemplate.evaluate()
+      .setTitle(page === 'login' ? 'Kliqify | Masuk' : 'Kliqify | Daftar')
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
+      .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+  }
+  
+  // Cross-domain session sync via redirect (not iframe — browsers block third-party localStorage)
+  const action = e.parameter.action;
+  if (action === 'login' || action === 'logout') {
+    const syncUser = e.parameter.user || '';
+    const redirectTo = e.parameter.redirect || '';
+    
+    let jsCode = '';
+    if (action === 'login' && syncUser) {
+      jsCode = `localStorage.setItem('kliqify_username','${syncUser.replace(/'/g,"\\'")}');`;
+    } else {
+      jsCode = `localStorage.removeItem('kliqify_username');localStorage.removeItem('kliqify_password');localStorage.removeItem('kliqify_nama');localStorage.removeItem('kliqify_role');localStorage.removeItem('kliqify_status');`;
+    }
+    
+    // After setting/clearing localStorage, redirect to target or landing page
+    const finalRedirect = redirectTo ? redirectTo : appUrl;
+    const syncHtml = '<!DOCTYPE html><html><body><script>'
+      + jsCode
+      + 'window.location.replace("' + finalRedirect.replace(/"/g, '\\"') + '");'
+      + '</script></body></html>';
+    
+    return HtmlService.createHtmlOutput(syncHtml)
+      .setTitle('Redirecting...')
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  }
+
+  // Default: Show Landing Page (SPA handles routing for terms, privacy, etc.)
+  const landingTemplate = HtmlService.createTemplateFromFile('landingpage');
+  landingTemplate.appUrl = appUrl;
+  
+  return landingTemplate
+    .evaluate()
+    .setTitle('Kliqify | Hasilkan Uang dari Setiap Klik')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+}
+
+// ========== AUTHENTICATION ========== //
+
+// Note: getUsersSheet is now in setup.gs to handle prioritizing 'Registrasi/Login'
+
+function registerUser(data) {
+  const lock = LockService.getScriptLock();
+  try {
+    // Wait for up to 30 seconds for other processes to finish.
+    lock.waitLock(30000);
+    
+    const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+    
+    // 1. Prepare Target Sheets
+    let sheetMaster = ss.getSheetByName(CONFIG.SHEET_MASTER);
+    if (!sheetMaster) {
+       console.log("Master User Sheet not found, creating:", CONFIG.SHEET_MASTER);
+       sheetMaster = ss.insertSheet(CONFIG.SHEET_MASTER);
+    }
+    
+    ensureHeaders(sheetMaster);
+    SpreadsheetApp.flush(); // Force header creation to be recognized
+
+    // 2. Check for Duplicates (Check Master Sheet)
+    const users = sheetMaster.getDataRange().getValues();
+    const headers = users[0] || [];
+    
+    const userCol = findColumnIndex(headers, CONFIG.COLS_USERS.USERNAME);
+    const emailCol = findColumnIndex(headers, CONFIG.COLS_USERS.EMAIL);
+    const phoneCol = findColumnIndex(headers, CONFIG.COLS_USERS.PHONE);
+    
+    if (users.length > 1) {
+       const newUsername = String(data.username || '').toLowerCase().trim();
+       const newEmail = String(data.email || '').toLowerCase().trim();
+       const newPhoneNormalized = normalizePhone(data.phone);
+
+       for (let i = 1; i < users.length; i++) {
+         const row = users[i];
+         
+         // Check Username
+         if (userCol > -1 && String(row[userCol]).toLowerCase().trim() === newUsername) {
+           return { success: false, message: 'Username sudah digunakan!' };
+         }
+         
+         // Check Email
+         if (emailCol > -1 && newEmail && String(row[emailCol]).toLowerCase().trim() === newEmail) {
+           return { success: false, message: 'Email telah digunakan!' };
+         }
+         
+          // Check Phone
+          if (phoneCol > -1 && newPhoneNormalized && row[phoneCol]) {
+            const dbPhoneNormalized = normalizePhone(row[phoneCol]);
+            if (dbPhoneNormalized === newPhoneNormalized) {
+              return { success: false, message: 'Nomor telepon telah digunakan!' };
+            }
+          }
+        }
+    }
+    
+    // 3. Validate Data
+    if (!data.password || data.password.length < 4) {
+      return { success: false, message: 'Password minimal 4 karakter' };
+    }
+    
+    // 4. Prepare Data Object (Canonical Source)
+    const today = new Date().toISOString();
+    const rowObj = {};
+    
+    // Use Canonical Keys from CONFIG (Element 0 of Alias Arrays)
+    rowObj[CONFIG.COLS_USERS.JOIN_DATE[0]] = today;
+    rowObj[CONFIG.COLS_USERS.EMAIL[0]] = data.email || '';
+    rowObj[CONFIG.COLS_USERS.USERNAME[0]] = data.username;
+    rowObj[CONFIG.COLS_USERS.PHONE[0]] = data.phone ? "'" + data.phone : ''; 
+    rowObj[CONFIG.COLS_USERS.PASSWORD[0]] = data.password;
+    rowObj[CONFIG.COLS_USERS.USER_TYPE[0]] = 'user';
+    rowObj[CONFIG.COLS_USERS.NAME[0]] = data.name || data.username;
+    
+    // Stats (init to 0)
+    rowObj[CONFIG.COLS_USERS.BALANCE[0]] = 0;
+    rowObj[CONFIG.COLS_USERS.TOTAL_VIEW[0]] = 0;
+    rowObj[CONFIG.COLS_USERS.VIEW_TODAY[0]] = 0;
+    rowObj[CONFIG.COLS_USERS.TODAY_EARN[0]] = 0;
+    rowObj[CONFIG.COLS_USERS.STATUS[0]] = 'Active';
+
+    // Activity Tracking (init)
+    rowObj[CONFIG.COLS_USERS.LAST_ACTIVITY_DATE[0]] = today;
+    rowObj[CONFIG.COLS_USERS.LAST_ACTIVITY_TYPE[0]] = 'Registration';
+    rowObj[CONFIG.COLS_USERS.ANNOUNCEMENT[0]] = 'Selamat datang di Kliqify!';
+    
+    // Withdrawal Info (init)
+    rowObj[CONFIG.COLS_USERS.WITHDRAW_PENDING[0]] = 0;
+    rowObj[CONFIG.COLS_USERS.WITHDRAW_SUCCESS[0]] = 0;
+    rowObj[CONFIG.COLS_USERS.LAST_WITHDRAW_STATUS[0]] = 'None';
+
+    // 5. Write to Master Sheet (Registrasi/Login)
+    const masterHeaders = sheetMaster.getDataRange().getValues()[0] || [];
+    const masterRow = buildRowFromHeaders(masterHeaders, rowObj);
+    sheetMaster.appendRow(masterRow);
+    
+    // Force write
+    SpreadsheetApp.flush();
+    
+    // Construct redirect URL for Dashboard
+    const redirectUrl = ScriptApp.getService().getUrl() + '?page=dashboard&user=' + encodeURIComponent(data.username);
+    
+    return { 
+      success: true, 
+      message: 'Registrasi berhasil! Mengalihkan...',
+      redirectUrl: redirectUrl
+    };
+    
+  } catch (err) {
+    console.error("Registration Error", err);
+    return { success: false, message: 'Gagal melakukan registrasi. Terjadi kesalahan pada server.' };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/**
+ * Normalizes phone number for comparison by removing non-digits,
+ * stripping leading '62' (country code) and leading '0'.
+ */
+function normalizePhone(phone) {
+  if (!phone) return '';
+  let cleaned = String(phone).replace(/\D/g, ''); // Numeric only
+  
+  // Strip common leading prefix '62'
+  if (cleaned.startsWith('62')) {
+    cleaned = cleaned.substring(2);
+  }
+  
+  // Strip leading '0'
+  while (cleaned.startsWith('0')) {
+    cleaned = cleaned.substring(1);
+  }
+  
+  return cleaned;
+}
+
+// Helper to build row array based on a sheet's header row
+function buildRowFromHeaders(headers, dataObj) {
+  const row = [];
+  for (let i = 0; i < headers.length; i++) {
+    const headerName = String(headers[i]).trim();
+    if (!headerName) {
+      row.push('');
+      continue;
+    }
+    
+    let value = '';
+    
+    // 1. Check for Direct Match with Canonical Name or Alias
+    // We iterate through all CONFIG entries to find which canonical key this header belongs to
+    let canonicalKey = null;
+    for (const [key, aliases] of Object.entries(CONFIG.COLS_USERS)) {
+      if (aliases.some(a => a.toLowerCase() === headerName.toLowerCase())) {
+        canonicalKey = aliases[0]; // The first one is ALWAYS our canonical key in rowObj
+        break;
+      }
+    }
+    
+    // 2. If we found a matching canonical key, get value from dataObj
+    if (canonicalKey && dataObj[canonicalKey] !== undefined) {
+      value = dataObj[canonicalKey];
+    } else if (dataObj[headerName] !== undefined) {
+      // Fallback for headers not in CONFIG but present in dataObj
+      value = dataObj[headerName];
+    }
+    
+    row.push(value);
+  }
+  return row;
+}
+
+function loginUser(username, password) {
+  try {
+    const sheet = getUsersSheet();
+    const data = sheet.getDataRange().getValues();
+    const headers = data[0];
+    
+    // Use robust finder
+    const userCol = findColumnIndex(headers, CONFIG.COLS_USERS.USERNAME); 
+    const passCol = findColumnIndex(headers, CONFIG.COLS_USERS.PASSWORD); 
+    
+    if (userCol === -1 || passCol === -1) {
+      return { 
+        success: false, 
+        message: 'Terjadi kesalahan sistem: Konfigurasi database tidak valid.' 
+      };
+    }
+    
+    const userLower = username.toLowerCase().trim();
+    
+    for (let i = 1; i < data.length; i++) {
+        const dbUser = String(data[i][userCol]).toLowerCase().trim();
+        
+        if (dbUser === userLower) {
+          const rawDbPass = data[i][passCol];
+          const dbPass = String(rawDbPass || '').trim();
+          const inputPass = String(password).trim();
+          
+          if (!dbPass) {
+            return { 
+              success: false, 
+              message: 'Akun Anda belum memiliki password di database. Silakan hubungi admin atau daftar ulang.' 
+            };
+          }
+          
+          if (dbPass === inputPass) {
+            // Retrieve UserType and Nama from the sheet
+            const roleCol = findColumnIndex(headers, CONFIG.COLS_USERS.USER_TYPE);
+            let userRole = 'user'; // default
+            if (roleCol > -1) {
+              userRole = String(data[i][roleCol]).toLowerCase().trim() || 'user';
+            }
+            
+            const nameCol = findColumnIndex(headers, CONFIG.COLS_USERS.NAME || ['Nama', 'Name', 'FullName']);
+            let fullName = data[i][userCol]; // fallback
+            if (nameCol > -1) {
+              fullName = String(data[i][nameCol]).trim() || data[i][userCol];
+            }
+
+            return { 
+              success: true, 
+              userData: { Username: data[i][userCol], UserType: userRole, Nama: fullName }, // pass back to frontend
+              redirectUrl: ScriptApp.getService().getUrl() + '?page=dashboard&user=' + encodeURIComponent(data[i][userCol])
+            };
+          } else {
+            return { 
+                success: false, 
+                message: 'Password salah!' 
+            };
+          }
+        }
+    }
+    
+    return { success: false, message: `Username '${username}' tidak ditemukan.` };
+    
+    return { success: false, message: `Username '${username}' tidak ditemukan.` };
+    
+  } catch (err) {
+    console.error(err);
+    return { success: false, message: 'Terjadi kesalahan pada server.' };
+  }
+}
+
+// Wrapper for client-side call
+function login(username, password) {
+  return loginUser(username, password);
+}
+
+// getUserData(username) helper is used to fetch user data across sheets
+
+// Get specific user data
+function getUserData(username) {
+  if (!username) return null;
+  const userLower = username.toLowerCase().trim();
+  const sheets = getAllUserSheets();
+  let mergedData = null;
+  const sourceSheets = [];
+
+  for (const sheet of sheets) {
+    const data = sheet.getDataRange().getValues();
+    if (data.length < 2) continue;
+    
+    const headers = data[0];
+    const userCol = findColumnIndex(headers, CONFIG.COLS_USERS.USERNAME);
+    if (userCol === -1) continue;
+    
+    const emailCol = findColumnIndex(headers, CONFIG.COLS_USERS.EMAIL);
+    const phoneCol = findColumnIndex(headers, CONFIG.COLS_USERS.PHONE);
+
+    for (let i = 1; i < data.length; i++) {
+      const row = data[i];
+      const dbUser = String(row[userCol]).toLowerCase().trim();
+      const dbEmail = emailCol > -1 ? String(row[emailCol]).toLowerCase().trim() : '';
+      const dbPhone = phoneCol > -1 ? String(row[phoneCol]).trim() : '';
+
+      if (userLower === dbUser || userLower === dbEmail || userLower === dbPhone) {
+        if (!mergedData) {
+          mergedData = {};
+          // Initialize with default values
+          for (const [key, aliases] of Object.entries(CONFIG.COLS_USERS)) {
+            const propName = aliases[0];
+            mergedData[propName] = (propName === 'Saldo' || propName === 'Total_View' || propName === 'View_Today' || propName === 'Today_Earn' || propName === 'Withdraw_Pending' || propName === 'Withdraw_Success') ? 0 : '';
+          }
+        }
+        
+        // Merge values from this sheet
+        for (const [key, aliases] of Object.entries(CONFIG.COLS_USERS)) {
+          const propName = aliases[0];
+          const colIdx = findColumnIndex(headers, aliases);
+          
+          if (colIdx > -1) {
+            const val = row[colIdx];
+            // Only overwrite if current value is "empty" or if it's a numeric stat (to aggregate or find best)
+            // For stats, we prefer the highest value found across sheets (most up-to-date)
+            if (propName === 'Saldo' || propName === 'Total_View' || propName === 'View_Today' || propName === 'Today_Earn' || propName === 'Withdraw_Pending' || propName === 'Withdraw_Success') {
+              mergedData[propName] = Math.max(mergedData[propName], parseFloat(val) || 0);
+            } else if (!mergedData[propName] || mergedData[propName] === 'Tidak diketahui') {
+              if (val !== undefined && val !== null && val !== '') {
+                mergedData[propName] = val;
+              }
+            }
+          }
+        }
+        
+        // Add extra fields implicitly expected
+        const extraCols = ['Last_Activity_Date', 'Last_Activity_Type', 'Last_Activity_Detail', 'Announcement'];
+        extraCols.forEach(col => {
+          const idx = findColumnIndex(headers, col);
+          if (idx > -1 && (!mergedData[col] || mergedData[col] === 'Tidak diketahui')) {
+            mergedData[col] = row[idx];
+          }
+        });
+        
+        break; // Found in this sheet, move to next sheet
+      }
+    }
+  }
+
+  return mergedData;
+}
+
+// Process withdrawal
+function processWithdrawal(data) {
+  try {
+    const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+    const usersSheet = getUsersSheet();
+    
+    // Get User Balance
+    let userRow = -1;
+    let balanceCol = -1;
+    let usernameCol = -1;
+    
+    const usersData = usersSheet.getDataRange().getValues();
+    const headers = usersData[0];
+    
+    usernameCol = findColumnIndex(headers, CONFIG.COLS_USERS.USERNAME);
+    balanceCol = findColumnIndex(headers, CONFIG.COLS_USERS.BALANCE);
+    
+    if (usernameCol === -1 || balanceCol === -1) throw new Error("Database error: Columns not found");
+    
+    // Find User
+    for(let i=1; i<usersData.length; i++) {
+      if(String(usersData[i][usernameCol]).toLowerCase() === data.username.toLowerCase()) {
+         userRow = i + 1; // 1-based index
+         break;
+      }
+    }
+    
+    if (userRow === -1) throw new Error("User not found");
+    
+    // Find Withdrawal Cols
+    const withdrawPendingCol = findColumnIndex(headers, CONFIG.COLS_USERS.WITHDRAW_PENDING);
+    const lastWithdrawStatusCol = findColumnIndex(headers, CONFIG.COLS_USERS.LAST_WITHDRAW_STATUS);
+    
+    // (Optional) Repair if missing, but don't block for live calc
+    if (withdrawPendingCol === -1 || lastWithdrawStatusCol === -1) {
+       ensureHeaders(usersSheet);
+    }
+    
+    const currentBalance = parseFloat(usersData[userRow-1][balanceCol]) || 0;
+    const currentPending = parseFloat(usersData[userRow-1][withdrawPendingCol]) || 0;
+    const amount = parseFloat(data.amount);
+    
+    if (amount < 10000) throw new Error("Minimum withdrawal is Rp 10.000");
+    if (currentBalance < amount) throw new Error("Insufficient balance");
+    
+    // Add to Withdrawals Sheet
+    let withdrawSheet = ss.getSheetByName(CONFIG.SHEET_WITHDRAWALS || 'Withdrawals');
+    if (!withdrawSheet) {
+      withdrawSheet = ss.insertSheet(CONFIG.SHEET_WITHDRAWALS || 'Withdrawals');
+      withdrawSheet.appendRow(['Timestamp', 'Username', 'Amount', 'Method', 'Account', 'Status']);
+    }
+    
+    withdrawSheet.appendRow([
+      new Date(),
+      data.username,
+      amount,
+      data.method,
+      data.accountNumber,
+      'Pending'
+    ]);
+    
+    // Deduct Balance & Update Stats
+    usersSheet.getRange(userRow, balanceCol + 1).setValue(currentBalance - amount);
+    
+    // Safety check for optional columns in user sheet
+    if (withdrawPendingCol > -1) {
+      usersSheet.getRange(userRow, withdrawPendingCol + 1).setValue(currentPending + amount);
+    }
+    if (lastWithdrawStatusCol > -1) {
+      usersSheet.getRange(userRow, lastWithdrawStatusCol + 1).setValue('Pending');
+    }
+    
+    return { success: true, message: 'Withdrawal request submitted!' };
+    
+  } catch (e) {
+    return { success: false, message: e.message };
+  }
+}
+
+
+// Helper functions
+function formatDate(dateString) {
+  if (!dateString || dateString === 'Tidak diketahui') return dateString;
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('id-ID', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+  } catch (e) {
+    return dateString;
+  }
+}
+
+function formatNumber(num) {
+  // Handle undefined/null/empty cases
+  if (num === undefined || num === null || num === '') {
+    return '0';
+  }
+  
+  const numberValue = Number(num);
+  if (isNaN(numberValue)) {
+    return '0';
+  }
+  
+  // Format the number with thousand separators
+  return numberValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+/**
+ * Generates chart data with 30-minute granularity, limited to current time in WIB (GMT+7).
+ */
+function generateChartData(todayViews, todayEarn, username) {
+  // WIB Timezone calculation
+  const now = new Date();
+  const wibDate = Utilities.formatDate(now, "GMT+7", "yyyy-MM-dd");
+  const wibTime = Utilities.formatDate(now, "GMT+7", "HH:mm");
+  const [currentHour, currentMinute] = wibTime.split(':').map(Number);
+  
+  // Seeded PRNG (mulberry32) - deterministic per user per day
+  const seedStr = (username || 'default') + '_' + wibDate;
+  let seed = 0;
+  for (let i = 0; i < seedStr.length; i++) {
+    seed = ((seed << 5) - seed + seedStr.charCodeAt(i)) | 0;
+  }
+  seed = Math.abs(seed);
+  
+  function seededRandom() {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  }
+  
+  const views = [];
+  const earnings = [];
+  const labels = [];
+  
+  // Weights for distribution (seeded random, weighted towards peak hours)
+  const weights = [];
+  let totalWeight = 0;
+  
+  // Number of 30-min intervals up to now
+  const intervals = (currentHour * 2) + (currentMinute >= 30 ? 1 : 0);
+  
+  for (let i = 0; i <= intervals; i++) {
+     const h = Math.floor(i / 2);
+     let weight = seededRandom();
+     if (h >= 7 && h <= 22) weight *= 2.5; 
+     weights.push(weight);
+     totalWeight += weight;
+  }
+  
+  let accViews = 0;
+  let accEarn = 0;
+  
+  for (let i = 0; i <= intervals; i++) {
+    const h = Math.floor(i / 2);
+    const m = (i % 2 === 0) ? '00' : '30';
+    const label = (h < 10 ? '0' + h : h) + ':' + m;
+    labels.push(label);
+    
+    let v = 0;
+    let e = 0;
+    
+    if (i === intervals) {
+      v = (todayViews || 0) - accViews;
+      e = (todayEarn || 0) - accEarn;
+    } else {
+      v = Math.floor((weights[i] / totalWeight) * (todayViews || 0));
+      e = Math.floor((weights[i] / totalWeight) * (todayEarn || 0));
+      accViews += v;
+      accEarn += e;
+    }
+    
+    views.push(Math.max(0, v));
+    earnings.push(Math.max(0, e));
+  }
+
+  return { labels: labels, views: views, earnings: earnings };
+}
+
+/**
+ * Records a shortlink view unconditionally (+1 View, +35 Rp).
+ * Triggers a 1-time daily bonus (+50 Rp) if it's the first view today.
+ */
+function recordViewAndBonus(username) {
+  if (!username) return;
+
+  try {
+    const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+    const sheet = ss.getSheetByName(CONFIG.SHEET_MASTER);
+    if (!sheet) return;
+
+    const data = sheet.getDataRange().getValues();
+    if (data.length < 2) return;
+
+    const headers = data[0];
+    const userCol = findColumnIndex(headers, CONFIG.COLS_USERS.USERNAME);
+    const viewTodayCol = findColumnIndex(headers, CONFIG.COLS_USERS.VIEW_TODAY);
+    const totalViewCol = findColumnIndex(headers, CONFIG.COLS_USERS.TOTAL_VIEW);
+    const todayEarnCol = findColumnIndex(headers, CONFIG.COLS_USERS.TODAY_EARN);
+    const balanceCol = findColumnIndex(headers, CONFIG.COLS_USERS.BALANCE);
+    const bonusDateCol = findColumnIndex(headers, CONFIG.COLS_USERS.BONUS_DATE); // From setup.gs
+
+    // Ensure columns exist before writing
+    if (userCol === -1 || viewTodayCol === -1 || totalViewCol === -1 || todayEarnCol === -1 || balanceCol === -1) {
+      return; 
+    }
+
+    const userLower = username.toLowerCase().trim();
+    const todayStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone() || "GMT+7", "yyyy-MM-dd");
+
+    for (let i = 1; i < data.length; i++) {
+        if (String(data[i][userCol]).toLowerCase().trim() === userLower) {
+           
+           let addViews = 1;
+           let addEarn = 35; // 35 Rp fixed per view
+           
+           // Daily Bonus Check
+           if (bonusDateCol !== -1) {
+             const lastBonusDate = String(data[i][bonusDateCol] || '').trim();
+             if (lastBonusDate !== todayStr) {
+               addEarn += 50; // Extra 50 Rp daily bonus
+               sheet.getRange(i + 1, bonusDateCol + 1).setValue(todayStr); // Update marker
+             }
+           }
+
+           const currentViewToday = parseFloat(data[i][viewTodayCol]) || 0;
+           const currentTotalView = parseFloat(data[i][totalViewCol]) || 0;
+           const currentTodayEarn = parseFloat(data[i][todayEarnCol]) || 0;
+           const currentBalance = parseFloat(data[i][balanceCol]) || 0;
+
+           // Write back to sheet (i + 1 for 1-based indexing, col + 1 as well)
+           sheet.getRange(i + 1, viewTodayCol + 1).setValue(currentViewToday + addViews);
+           sheet.getRange(i + 1, totalViewCol + 1).setValue(currentTotalView + addViews);
+           sheet.getRange(i + 1, todayEarnCol + 1).setValue(currentTodayEarn + addEarn);
+           sheet.getRange(i + 1, balanceCol + 1).setValue(currentBalance + addEarn);
+
+           SpreadsheetApp.flush(); // Ensure data is saved before next read
+           break;
+        }
+    }
+
+  } catch (err) {
+    console.warn("recordViewAndBonus error:", err);
+  }
+}
+
+/**
+ * Resets View_Today and Today_Earn for all users.
+ * To be triggered via Time-driven trigger (Daily at midnight).
+ */
+function resetDailyStats() {
+  const sheets = getAllUserSheets();
+  let totalReset = 0;
+
+  for (const sheet of sheets) {
+    const data = sheet.getDataRange().getValues();
+    if (data.length < 2) continue;
+
+    const headers = data[0];
+    const viewTodayCol = findColumnIndex(headers, CONFIG.COLS_USERS.VIEW_TODAY);
+    const todayEarnCol = findColumnIndex(headers, CONFIG.COLS_USERS.TODAY_EARN);
+
+    if (viewTodayCol === -1 && todayEarnCol === -1) continue;
+
+    // Direct batch update is faster but individual setValue is safer for headers reconciliation
+    for (let i = 1; i < data.length; i++) {
+        if (viewTodayCol > -1) sheet.getRange(i + 1, viewTodayCol + 1).setValue(0);
+        if (todayEarnCol > -1) sheet.getRange(i + 1, todayEarnCol + 1).setValue(0);
+        totalReset++;
+    }
+    SpreadsheetApp.flush();
+  }
+  
+  console.log(`Reset daily stats completed for ${totalReset} user entries.`);
+}
+
+/**
+ * Endpoint for Dashboard Refresh
+ */
+function getDashboardData(username, password) {
+  // STRICT SECURE AUTHENTICATION CHECK
+  if (!username || !password) return { success: false, message: 'Unauthorized (No credentials)' };
+  
+  const authResult = loginUser(username, password);
+  if (!authResult || !authResult.success) {
+    return { success: false, message: 'Unauthorized (Invalid credentials)' };
+  }
+
+  // No longer applying view rewards on dashboard load to prevent abuse
+
+  const userData = getUserData(username);
+  if (!userData) return { success: false, message: 'Data error' };
+  
+  // Fetch Live Withdrawal Stats
+  const withdrawStats = getWithdrawalStats(username);
+  
+  // Merge live stats (priority over database columns)
+  userData.Withdraw_Pending = withdrawStats.pending;
+  userData.Withdraw_Success = withdrawStats.success;
+  userData.Status_Penarikan = withdrawStats.latestStatus;
+
+  // GLOBAL ANNOUNCEMENT (Centralized Broadcast)
+  const globalAnnouncement = getAppSetting('Global_Announcement');
+  if (globalAnnouncement) {
+    userData.Announcement = globalAnnouncement;
+  }
+  
+  // --- REAL HISTORY LOGIC ---
+  // 1. Log current snapshot to capture any new earnings since last load
+  logHistorySnapshot(username, userData.View_Today, userData.Today_Earn);
+  
+  // 2. Get real history data
+  const historyData = getHistoryData(username);
+  
+  // 3. Keep generating chart data for the GRAPH (visual only), but use history for the TABLE
+  const chartData = generateChartData(userData.View_Today, userData.Today_Earn, username);
+  
+  return {
+    success: true,
+    userData: userData,
+    chartData: chartData, // Keep for graph
+    historyData: historyData, // NEW: Real data for table
+    appUrl: ScriptApp.getService().getUrl()
+  };
+}
+
+/**
+ * Gets the History sheet or creates it.
+ */
+function getHistorySheet() {
+  const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  let sheet = ss.getSheetByName(CONFIG.SHEET_HISTORY);
+  if (!sheet) {
+    sheet = ss.insertSheet(CONFIG.SHEET_HISTORY);
+    sheet.appendRow(CONFIG.COLUMNS_HISTORY);
+  }
+  return sheet;
+}
+
+/**
+ * Logs a snapshot history entry if there's a difference.
+ */
+function logHistorySnapshot(username, currentViews, currentEarn) {
+  const sheet = getHistorySheet();
+  const data = sheet.getDataRange().getValues();
+  const now = new Date();
+  const today = Utilities.formatDate(now, "GMT+7", "yyyy-MM-dd");
+  
+  // 1. Find last snapshot for this user TODAY
+  let lastViews = 0;
+  let lastEarn = 0;
+  
+  // Iterate backwards to find latest entry
+  for (let i = data.length - 1; i >= 1; i--) {
+    const row = data[i];
+    // row[0] is Timestamp, row[1] is Username
+    // We check if it's the same user and same day
+    if (String(row[1]).toLowerCase() === username.toLowerCase()) {
+      const rowDate = Utilities.formatDate(pd(row[0]), "GMT+7", "yyyy-MM-dd");
+      if (rowDate === today) {
+        lastViews += Number(row[3] || 0);
+        lastEarn += Number(row[4] || 0);
+      }
+    }
+  }
+  
+  // Calculate difference (Real - Logged)
+  const diffViews = Math.max(0, (currentViews || 0) - lastViews);
+  const diffEarn = Math.max(0, (currentEarn || 0) - lastEarn);
+  
+  // Only log if significant change (to avoid spamming 0s)
+  // For views: log if > 0. For earn: log if > 0.
+  if (diffViews > 0 || diffEarn > 0) {
+    sheet.appendRow([
+      new Date(), // Timestamp
+      username,
+      'Shortlink Views',
+      diffViews,
+      diffEarn
+    ]);
+    SpreadsheetApp.flush(); // Force write BEFORE read
+  }
+}
+
+/**
+ * Parse Date helper
+ */
+function pd(d) {
+  return new Date(d);
+}
+
+/**
+ * Get real history data (latest 50 transactions)
+ */
+function getHistoryData(username) {
+  const sheet = getHistorySheet();
+  const data = sheet.getDataRange().getValues();
+  const history = [];
+
+  for (let i = data.length - 1; i >= 1; i--) {
+    const row = data[i];
+    if (String(row[1]).trim().toLowerCase() === String(username).trim().toLowerCase()) { // Trim username
+      history.push({
+        timestamp: Utilities.formatDate(pd(row[0]), "GMT+7", "dd MMM yyyy HH:mm"),
+        source: row[2],
+        views: row[3],
+        amount: row[4]
+      });
+
+      if (history.length >= 50) {
+        break; // Limit to 50 records
+      }
+    }
+  }
+  return history;
+}
+
+/**
+ * Calculates withdrawal statistics directly from the source sheet for accuracy.
+ */
+function getWithdrawalStats(username) {
+  const stats = { pending: 0, success: 0, latestStatus: 'None' };
+  if (!username) return stats;
+  
+  try {
+    const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+    const sheet = ss.getSheetByName(CONFIG.SHEET_WITHDRAWALS || 'Withdrawals');
+    if (!sheet) return stats;
+    
+    const data = sheet.getDataRange().getValues();
+    if (data.length < 2) return stats;
+    
+    const headers = data[0];
+    const userIdx = findColumnIndex(headers, ['Username', 'User', 'User Name']);
+    const amountIdx = findColumnIndex(headers, ['Amount', 'Jumlah', 'Nominal']);
+    const statusIdx = findColumnIndex(headers, ['Status', 'Keterangan', 'State']);
+    
+    if (userIdx === -1 || amountIdx === -1 || statusIdx === -1) {
+      console.warn("Withdrawal columns not found in headers:", headers);
+      return stats;
+    }
+    
+    const userLower = username.toLowerCase().trim();
+    
+    // Iterate from newest to oldest for latest status
+    for (let i = data.length - 1; i >= 1; i--) {
+      const row = data[i];
+      if (String(row[userIdx]).toLowerCase().trim() === userLower) {
+        const val = parseFloat(row[amountIdx]) || 0;
+        const statusRaw = String(row[statusIdx]).trim();
+        const status = statusRaw.toLowerCase();
+        
+        if (stats.latestStatus === 'None') stats.latestStatus = statusRaw;
+        
+        if (status === 'pending') {
+          stats.pending += val;
+        } else if (status === 'success' || status === 'berhasil' || status === 'approved') {
+          stats.success += val;
+        }
+      }
+    }
+  } catch (e) {
+    console.warn("Error calculating withdrawal stats:", e);
+  }
+  return stats;
+}
+
+/**
+ * Returns withdrawal history for a user from the Withdrawals sheet.
+ */
+function getWithdrawalHistory(username) {
+  if (!username) return [];
+  
+  try {
+    const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+    const sheet = ss.getSheetByName(CONFIG.SHEET_WITHDRAWALS || 'Withdrawals');
+    if (!sheet) return [];
+    
+    const data = sheet.getDataRange().getValues();
+    if (data.length < 2) return [];
+    
+    const headers = data[0];
+    const userIdx = findColumnIndex(headers, ['Username', 'User', 'User Name']);
+    const amountIdx = findColumnIndex(headers, ['Amount', 'Jumlah', 'Nominal']);
+    const statusIdx = findColumnIndex(headers, ['Status', 'Keterangan', 'State']);
+    const methodIdx = findColumnIndex(headers, ['Method', 'Metode']);
+    const accountIdx = findColumnIndex(headers, ['Account', 'Rekening', 'No. Tujuan']);
+    const timestampIdx = findColumnIndex(headers, ['Timestamp', 'Tanggal', 'Date']);
+    
+    if (userIdx === -1) return [];
+    
+    const userLower = username.toLowerCase().trim();
+    const results = [];
+    
+    for (let i = data.length - 1; i >= 1; i--) {
+      const row = data[i];
+      if (String(row[userIdx]).toLowerCase().trim() === userLower) {
+        let ts = '';
+        if (timestampIdx > -1 && row[timestampIdx]) {
+          try {
+            const d = new Date(row[timestampIdx]);
+            ts = Utilities.formatDate(d, "GMT+7", "dd MMM yyyy HH:mm");
+          } catch(e) {
+            ts = String(row[timestampIdx]);
+          }
+        }
+        
+        results.push({
+          timestamp: ts,
+          amount: parseFloat(row[amountIdx]) || 0,
+          method: methodIdx > -1 ? String(row[methodIdx]) : '-',
+          account: accountIdx > -1 ? String(row[accountIdx]) : '-',
+          status: statusIdx > -1 ? String(row[statusIdx]) : 'Unknown'
+        });
+      }
+    }
+    
+    return results;
+  } catch (e) {
+    console.error('Error in getWithdrawalHistory:', e);
+    return [];
+  }
+}
+
+/**
+ * Updates user display name.
+ */
+function updateUserName(data) {
+  try {
+    if (!data || !data.username || !data.newName) {
+      return { success: false, message: 'Data tidak lengkap' };
+    }
+    
+    const newName = String(data.newName).trim();
+    if (newName.length < 2) {
+      return { success: false, message: 'Nama minimal 2 karakter' };
+    }
+    
+    const sheets = getAllUserSheets();
+    const userLower = data.username.toLowerCase().trim();
+    let updated = 0;
+    
+    for (const sheet of sheets) {
+      const sheetData = sheet.getDataRange().getValues();
+      if (sheetData.length < 2) continue;
+      const headers = sheetData[0];
+      
+      const userCol = findColumnIndex(headers, CONFIG.COLS_USERS.USERNAME);
+      const nameCol = findColumnIndex(headers, CONFIG.COLS_USERS.NAME);
+      
+      if (userCol === -1) continue;
+      
+      for (let i = 1; i < sheetData.length; i++) {
+        const dbUser = String(sheetData[i][userCol]).toLowerCase().trim();
+        const dbName = nameCol > -1 ? String(sheetData[i][nameCol]).toLowerCase().trim() : '';
+        
+        if (dbUser === userLower || dbName === userLower) {
+          // Always update the Username column
+          sheet.getRange(i + 1, userCol + 1).setValue(newName);
+          // Also update the Nama column if it exists
+          if (nameCol > -1) {
+            sheet.getRange(i + 1, nameCol + 1).setValue(newName);
+          }
+          updated++;
+          break; // Only one row per sheet
+        }
+      }
+    }
+    
+    if (updated > 0) {
+      SpreadsheetApp.flush();
+      return { success: true, message: 'Nama berhasil diubah menjadi "' + newName + '"', newUsername: newName };
+    }
+    
+    return { success: false, message: 'User tidak ditemukan' };
+  } catch (e) {
+    console.error('Error in updateUserName:', e);
+    return { success: false, message: 'Error: ' + e.message };
+  }
+}
+
+/**
+ * Updates user password after verifying the old password.
+ */
+function updateUserPassword(data) {
+  try {
+    if (!data || !data.username || !data.oldPassword || !data.newPassword) {
+      return { success: false, message: 'Data tidak lengkap' };
+    }
+    
+    if (data.newPassword.length < 4) {
+      return { success: false, message: 'Password baru minimal 4 karakter' };
+    }
+    
+    const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+    const sheet = ss.getSheetByName(CONFIG.SHEET_MASTER);
+    if (!sheet) return { success: false, message: 'Database error: Sheet not found' };
+    
+    const sheetData = sheet.getDataRange().getValues();
+    const headers = sheetData[0];
+    
+    const userCol = findColumnIndex(headers, CONFIG.COLS_USERS.USERNAME);
+    const passCol = findColumnIndex(headers, CONFIG.COLS_USERS.PASSWORD);
+    
+    if (userCol === -1 || passCol === -1) {
+      return { success: false, message: 'Database error: Columns not found' };
+    }
+    
+    const userLower = data.username.toLowerCase().trim();
+    
+    for (let i = 1; i < sheetData.length; i++) {
+      if (String(sheetData[i][userCol]).toLowerCase().trim() === userLower) {
+        const currentPass = String(sheetData[i][passCol] || '').trim();
+        const inputOldPass = String(data.oldPassword).trim();
+        
+        if (currentPass !== inputOldPass) {
+          return { success: false, message: 'Password lama salah!' };
+        }
+        
+        sheet.getRange(i + 1, passCol + 1).setValue(data.newPassword);
+        SpreadsheetApp.flush();
+        return { success: true, message: 'Password berhasil diubah!' };
+      }
+    }
+    
+    return { success: false, message: 'User tidak ditemukan' };
+  } catch (e) {
+    console.error('Error in updateUserPassword:', e);
+    return { success: false, message: 'Error: ' + e.message };
+  }
+}
+
+// ========== ADMIN PANEL ENDPOINTS ========== //
+
+/**
+ * Validates if a username has Admin privileges
+ */
+function isUserAdmin(username) {
+  if (!username) return false;
+  const userData = getUserData(username);
+  return userData && String(userData.UserType).toLowerCase() === 'admin';
+}
+
+/**
+ * Fetch all users data for the Admin Panel
+ */
+function getUsersDataAdmin(adminUsername) {
+  if (!isUserAdmin(adminUsername)) return { success: false, message: 'Unauthorized' };
+
+  try {
+    const sheets = getAllUserSheets();
+    const allUsersMap = {}; // Map username -> data to deduplicate and aggregate
+    
+    // First pass: Build aggregated user map from all User Sheets
+    for (const sheet of sheets) {
+      const data = sheet.getDataRange().getValues();
+      if (data.length < 2) continue;
+      
+      const headers = data[0];
+      const userCol = findColumnIndex(headers, CONFIG.COLS_USERS.USERNAME);
+      const viewTodayCol = findColumnIndex(headers, CONFIG.COLS_USERS.VIEW_TODAY);
+      const todayEarnCol = findColumnIndex(headers, CONFIG.COLS_USERS.TODAY_EARN);
+      const balanceCol = findColumnIndex(headers, CONFIG.COLS_USERS.BALANCE);
+      const typeCol = findColumnIndex(headers, CONFIG.COLS_USERS.USER_TYPE);
+      let claimedCol = findColumnIndex(headers, CONFIG.COLS_USERS.LINKS_CLAIMED);
+      
+      // Self-healing: If Claimed column doesn't exist, create it now for read consistency
+      if (claimedCol === -1) {
+        headers.push('Claimed');
+        claimedCol = headers.length - 1; // It is now the last column
+        sheet.getRange(1, claimedCol + 1).setValue('Claimed');
+        SpreadsheetApp.flush();
+        
+        // Ensure data array reflects the new column by padding each row with empty strings
+        for (let r = 0; r < data.length; r++) {
+           data[r].push(r === 0 ? 'Claimed' : ''); 
+        }
+      }
+      
+      if (userCol === -1) continue;
+      
+      for (let i = 1; i < data.length; i++) {
+        const rowData = data[i] || [];
+        const username = userCol > -1 && userCol < rowData.length ? String(rowData[userCol]).trim() : '';
+        if (!username) continue;
+        const uLower = username.toLowerCase();
+        
+        if (!allUsersMap[uLower]) {
+          allUsersMap[uLower] = {
+             rowIdx: null, 
+             username: username,
+             role: 'user',
+             views: 0,
+             todayEarn: 0,
+             balance: 0,
+             linksCount: 0,
+             linksClaimed: 0,
+             pendingWithdrawals: []
+          };
+        }
+        
+        const u = allUsersMap[uLower];
+        if (typeCol > -1 && typeCol < rowData.length && rowData[typeCol]) u.role = rowData[typeCol];
+        if (viewTodayCol > -1 && viewTodayCol < rowData.length) u.views = Math.max(u.views, parseFloat(rowData[viewTodayCol]) || 0);
+        if (todayEarnCol > -1 && todayEarnCol < rowData.length) u.todayEarn = Math.max(u.todayEarn, parseFloat(rowData[todayEarnCol]) || 0);
+        if (balanceCol > -1 && balanceCol < rowData.length) u.balance = Math.max(u.balance, parseFloat(rowData[balanceCol]) || 0);
+        if (claimedCol > -1 && claimedCol < rowData.length) u.linksClaimed = Math.max(u.linksClaimed, parseFloat(rowData[claimedCol]) || 0);
+      }
+    }
+    
+    // Count total shortlinks for each user
+    const shortlinkSheet = getSheet(); // Helper from code.gs
+    const slData = shortlinkSheet.getDataRange().getValues();
+    if (slData.length > 1) {
+      const slHeaders = slData[0];
+      const slUserCol = findColumnIndex(slHeaders, ['Pembuat', 'CreatedBy']);
+      if (slUserCol > -1) {
+        for (let i = 1; i < slData.length; i++) {
+          const uName = String(slData[i][slUserCol]).toLowerCase().trim();
+          if (allUsersMap[uName]) {
+            allUsersMap[uName].linksCount++;
+          }
+        }
+      }
+    }
+    
+    // Convert map to array and filter out admin users
+    const result = Object.values(allUsersMap).filter(u => String(u.role).toLowerCase() !== 'admin');
+    
+    // Second pass: Get pending withdrawals
+    const wSheet = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID).getSheetByName(CONFIG.SHEET_WITHDRAWALS);
+    const wData = wSheet ? wSheet.getDataRange().getValues() : [];
+    
+    if (wData.length > 1) {
+      const wHeaders = wData[0];
+      const wUserCol = findColumnIndex(wHeaders, CONFIG.COLS_WITHDRAW.USER);
+      const wAmountCol = findColumnIndex(wHeaders, CONFIG.COLS_WITHDRAW.AMOUNT);
+      const wStatusCol = findColumnIndex(wHeaders, CONFIG.COLS_WITHDRAW.STATUS);
+      const wIdCol = findColumnIndex(wHeaders, CONFIG.COLS_WITHDRAW.TIMESTAMP);
+      const wMethodCol = findColumnIndex(wHeaders, CONFIG.COLS_WITHDRAW.METHOD);
+      const wAccountCol = findColumnIndex(wHeaders, CONFIG.COLS_WITHDRAW.ACCOUNT);
+
+      if (wUserCol !== -1 && wStatusCol !== -1) {
+        for (let i = 1; i < wData.length; i++) {
+          const status = String(wData[i][wStatusCol]).toLowerCase();
+          if (status === 'pending') {
+            const username = String(wData[i][wUserCol]).trim();
+            const uLower = username.toLowerCase();
+            
+            // If user not in our map (maybe from an old sheet), add them briefly
+            if (!allUsersMap[uLower]) {
+              allUsersMap[uLower] = {
+                username: username,
+                role: 'user',
+                views: 0, todayEarn: 0, balance: 0, linksCount: 0, linksClaimed: 0,
+                pendingWithdrawals: []
+              };
+              result.push(allUsersMap[uLower]);
+            }
+
+            let timestampVal = wData[i][wIdCol];
+            if (timestampVal instanceof Date) {
+              timestampVal = Utilities.formatDate(timestampVal, Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm:ss");
+            } else {
+              timestampVal = String(timestampVal || '');
+            }
+
+            allUsersMap[uLower].pendingWithdrawals.push({
+              rowIdx: i + 1,
+              timestamp: timestampVal,
+              amount: parseFloat(wData[i][wAmountCol]) || 0,
+              method: String(wData[i][wMethodCol] || 'Unknown'),
+              account: String(wData[i][wAccountCol] || '-')
+            });
+          }
+        }
+      }
+    }
+
+    return { success: true, users: result };
+  } catch (err) {
+    console.error("Admin Load Error", err);
+    return { success: false, message: 'Server error: ' + err.message };
+  }
+}
+
+/**
+ * Update multiple users' views and automatically calculate Earn and Balance
+ */
+function updateBulkUserViewsAdmin(adminUsername, updates) {
+  if (!isUserAdmin(adminUsername)) return { success: false, message: 'Unauthorized' };
+
+  if (!updates || !Array.isArray(updates) || updates.length === 0) {
+    return { success: false, message: 'Tidak ada data untuk diperbarui' };
+  }
+
+  try {
+    const sheets = getAllUserSheets();
+    const updateMap = {};
+    
+    // Convert array to a map for O(1) lookups: { "username1": addViews, "username2": addViews }
+    updates.forEach(u => {
+      const lowerUser = String(u.username).toLowerCase().trim();
+      updateMap[lowerUser] = parseFloat(u.addViews) || 0;
+    });
+
+    let usersUpdated = 0;
+    const timestampStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm:ss");
+
+    // We will update users in their respective sheets
+    for (const sheet of sheets) {
+      const data = sheet.getDataRange().getValues();
+      if (data.length < 2) continue;
+      
+      const headers = data[0];
+      const userCol = findColumnIndex(headers, CONFIG.COLS_USERS.USERNAME);
+      const viewTodayCol = findColumnIndex(headers, CONFIG.COLS_USERS.VIEW_TODAY);
+      const totalViewCol = findColumnIndex(headers, CONFIG.COLS_USERS.TOTAL_VIEW);
+      const todayEarnCol = findColumnIndex(headers, CONFIG.COLS_USERS.TODAY_EARN);
+      const balanceCol = findColumnIndex(headers, CONFIG.COLS_USERS.BALANCE);
+      const lastActivityDateCol = findColumnIndex(headers, CONFIG.COLS_USERS.LAST_ACTIVITY_DATE);
+      const lastActivityTypeCol = findColumnIndex(headers, CONFIG.COLS_USERS.LAST_ACTIVITY_TYPE);
+      let claimedCol = findColumnIndex(headers, CONFIG.COLS_USERS.LINKS_CLAIMED);
+      
+      // Self-healing: If Claimed column doesn't exist, create it now
+      if (claimedCol === -1) {
+        headers.push('Claimed');
+        claimedCol = headers.length - 1;
+        sheet.getRange(1, claimedCol + 1).setValue('Claimed');
+        SpreadsheetApp.flush();
+      }
+      
+      if (userCol === -1) continue;
+
+      let sheetModified = false;
+
+      for (let i = 1; i < data.length; i++) {
+        const rowData = data[i] || [];
+        const usernameInRow = userCol > -1 && userCol < rowData.length ? String(rowData[userCol]).toLowerCase().trim() : '';
+        if (!usernameInRow) continue;
+        
+        // If this user is in our bulk update payload
+        if (updateMap[usernameInRow] !== undefined && updateMap[usernameInRow] > 0) {
+          const rowNum = i + 1;
+          const addViews = updateMap[usernameInRow];
+          const addEarn = addViews * (CONFIG.VIEW_VALUE || 5);
+          
+          // Current values safely extracted
+          const currentViewsToday = viewTodayCol > -1 && viewTodayCol < rowData.length ? (parseFloat(rowData[viewTodayCol]) || 0) : 0;
+          const currentTotalViews = totalViewCol > -1 && totalViewCol < rowData.length ? (parseFloat(rowData[totalViewCol]) || 0) : 0;
+          const currentTodayEarn = todayEarnCol > -1 && todayEarnCol < rowData.length ? (parseFloat(rowData[todayEarnCol]) || 0) : 0;
+          const currentBalance = balanceCol > -1 && balanceCol < rowData.length ? (parseFloat(rowData[balanceCol]) || 0) : 0;
+          const currentClaimed = claimedCol > -1 && claimedCol < rowData.length ? (parseFloat(rowData[claimedCol]) || 0) : 0;
+          
+          // New totals
+          const newViewsToday = currentViewsToday + addViews;
+          const newTotalViews = currentTotalViews + addViews;
+          const newTodayEarn = currentTodayEarn + addEarn;
+          const newBalanceTotal = currentBalance + addEarn;
+          const newClaimed = currentClaimed + addViews;
+
+          // Update spreadsheet
+          if (viewTodayCol > -1) sheet.getRange(rowNum, viewTodayCol + 1).setValue(newViewsToday);
+          if (totalViewCol > -1) sheet.getRange(rowNum, totalViewCol + 1).setValue(newTotalViews);
+          if (todayEarnCol > -1) sheet.getRange(rowNum, todayEarnCol + 1).setValue(newTodayEarn);
+          if (balanceCol > -1) sheet.getRange(rowNum, balanceCol + 1).setValue(newBalanceTotal);
+          if (claimedCol > -1) sheet.getRange(rowNum, claimedCol + 1).setValue(newClaimed);
+          
+          // Set Activity Date
+          if (lastActivityDateCol > -1) sheet.getRange(rowNum, lastActivityDateCol + 1).setValue(timestampStr);
+          if (lastActivityTypeCol > -1) sheet.getRange(rowNum, lastActivityTypeCol + 1).setValue('Admin Claim');
+
+          sheetModified = true;
+          usersUpdated++;
+          
+          // CRITICAL FIX: Do NOT delete updateMap here, because if they have multiple sheets (Registrasi/Login AND Users),
+          // deleting it here means the second sheet gets skipped, causing Math.max to fail.
+          // We just leave it, and outer systems will succeed.
+        }
+      }
+      
+      if (sheetModified) SpreadsheetApp.flush(); // Flush per sheet
+    }
+
+    if (usersUpdated > 0) {
+      return { success: true, message: `Data ${usersUpdated} pengguna berhasil diperbarui!` };
+    } else {
+      return { success: false, message: 'Tidak ada pengguna yang berhasil diperbarui.' };
+    }
+  } catch (err) {
+    return { success: false, message: 'Update massal gagal: ' + err.message };
+  }
+}
+
+/**
+ * Approve or Reject Withdrawals via Admin Panel
+ */
+function approveWithdrawalAdmin(adminUsername, withdrawRowIdx, status) {
+   if (!isUserAdmin(adminUsername)) return { success: false, message: 'Unauthorized' };
+
+   try {
+     const wSheet = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID).getSheetByName(CONFIG.SHEET_WITHDRAWALS);
+     if (!wSheet) return { success: false, message: 'Withdrawals sheet not found' };
+
+     const wHeaders = wSheet.getDataRange().getValues()[0];
+     const statusCol = findColumnIndex(wHeaders, ['Status', 'State']);
+     
+     if (statusCol === -1) return { success: false, message: 'Status column not found' };
+
+     // Set to "Success" or "Rejected"
+     wSheet.getRange(withdrawRowIdx, statusCol + 1).setValue(status);
+     SpreadsheetApp.flush();
+
+     return { success: true, message: 'Withdrawal marked as ' + status };
+   } catch(err) {
+     return { success: false, message: 'Action failed: ' + err.message };
+   }
+}
+
+/**
+ * GLOBAL CONFIG HELPERS
+ */
+function getAppConfigSheet() {
+  const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  let sheet = ss.getSheetByName(CONFIG.SHEET_CONFIG);
+  if (!sheet) {
+    sheet = ss.insertSheet(CONFIG.SHEET_CONFIG);
+    sheet.appendRow(['Key', 'Value', 'Last Updated']);
+    sheet.setFrozenRows(1);
+    SpreadsheetApp.flush();
+  }
+  return sheet;
+}
+
+function getAppSetting(key) {
+  try {
+    const sheet = getAppConfigSheet();
+    const data = sheet.getDataRange().getValues();
+    for (let i = 1; i < data.length; i++) {
+      if (String(data[i][0]).toLowerCase() === key.toLowerCase()) {
+        return data[i][1];
+      }
+    }
+  } catch (e) {
+    console.warn("getAppSetting failed for", key, e);
+  }
+  return null;
+}
+
+function setAppSetting(key, value) {
+  const sheet = getAppConfigSheet();
+  const data = sheet.getDataRange().getValues();
+  const now = new Date();
+  
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][0]).toLowerCase() === key.toLowerCase()) {
+      sheet.getRange(i + 1, 2).setValue(value);
+      sheet.getRange(i + 1, 3).setValue(now);
+      SpreadsheetApp.flush();
+      return true;
+    }
+  }
+  
+  sheet.appendRow([key, value, now]);
+  SpreadsheetApp.flush();
+  return true;
+}
+
+/**
+ * ADMIN: Broadcast Global Announcement
+ */
+function broadcastAnnouncement(adminUser, message) {
+  if (!isUserAdmin(adminUser)) return { success: false, message: 'Unauthorized' };
+  setAppSetting('Global_Announcement', message);
+  return { success: true, message: 'Pengumuman global berhasil diperbarui!' };
+}
+
+/**
+ * ADMIN: Get System-wide Statistics
+ */
+function getAdminSystemStats(adminUser) {
+  if (!isUserAdmin(adminUser)) return { success: false, message: 'Unauthorized' };
+  
+  try {
+    const usersSheet = getUsersSheet();
+    const usersData = usersSheet.getDataRange().getValues();
+    const headers = usersData[0];
+    
+    const balanceCol = findColumnIndex(headers, CONFIG.COLS_USERS.BALANCE);
+    const totalViewCol = findColumnIndex(headers, CONFIG.COLS_USERS.TOTAL_VIEW);
+    
+    let totalUsers = usersData.length - 1;
+    let totalBalance = 0;
+    let totalViews = 0;
+    
+    for (let i = 1; i < usersData.length; i++) {
+      totalBalance += parseFloat(usersData[i][balanceCol]) || 0;
+      totalViews += parseFloat(usersData[i][totalViewCol]) || 0;
+    }
+    
+    // Withdrawal stats
+    const wSheet = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID).getSheetByName(CONFIG.SHEET_WITHDRAWALS);
+    const wData = wSheet ? wSheet.getDataRange().getValues() : [];
+    const wHeaders = wData[0] || [];
+    const wAmountCol = findColumnIndex(wHeaders, CONFIG.COLS_WITHDRAW.AMOUNT);
+    const wStatusCol = findColumnIndex(wHeaders, CONFIG.COLS_WITHDRAW.STATUS);
+    
+    let totalPaid = 0;
+    let totalPendingWithdraw = 0;
+    
+    if (wData.length > 1) {
+      for (let i = 1; i < wData.length; i++) {
+        const amt = parseFloat(wData[i][wAmountCol]) || 0;
+        const status = String(wData[i][wStatusCol]).toLowerCase();
+        if (status === 'success' || status === 'approved') totalPaid += amt;
+        if (status === 'pending') totalPendingWithdraw += amt;
+      }
+    }
+    
+    return {
+      success: true,
+      stats: {
+        totalUsers: totalUsers,
+        totalBalance: totalBalance,
+        totalViews: totalViews,
+        totalPaid: totalPaid,
+        totalPendingWithdraw: totalPendingWithdraw
+      }
+    };
+  } catch (e) {
+    return { success: false, message: 'Gagal memuat statistik: ' + e.message };
+  }
+}
+
+/**
+ * ADMIN: Update User Role (Admin/User)
+ */
+function adminUpdateUserRole(adminUser, targetUser, newRole) {
+  if (!isUserAdmin(adminUser)) return { success: false, message: 'Unauthorized' };
+  return updateUserInfo(targetUser, CONFIG.COLS_USERS.USER_TYPE, newRole);
+}
+
+/**
+ * ADMIN: Update User Status (Active/Banned)
+ */
+function adminUpdateUserStatus(adminUser, targetUser, newStatus) {
+  if (!isUserAdmin(adminUser)) return { success: false, message: 'Unauthorized' };
+  return updateUserInfo(targetUser, CONFIG.COLS_USERS.STATUS, newStatus);
+}
+
+/**
+ * Internal helper to update user info
+ */
+function updateUserInfo(username, colConfig, newValue) {
+  try {
+    const sheet = getUsersSheet();
+    const data = sheet.getDataRange().getValues();
+    const headers = data[0];
+    const userCol = findColumnIndex(headers, CONFIG.COLS_USERS.USERNAME);
+    const targetCol = findColumnIndex(headers, colConfig);
+    
+    if (userCol === -1 || targetCol === -1) throw new Error("Database column missing");
+    
+    const uLower = String(username).toLowerCase().trim();
+    for (let i = 1; i < data.length; i++) {
+      if (String(data[i][userCol]).toLowerCase().trim() === uLower) {
+        sheet.getRange(i + 1, targetCol + 1).setValue(newValue);
+        SpreadsheetApp.flush();
+        return { success: true, message: 'Data berhasil diperbarui' };
+      }
+    }
+    return { success: false, message: 'User tidak ditemukan' };
+  } catch (e) {
+    return { success: false, message: 'Update gagal: ' + e.message };
+  }
+}
+
+function include(filename) {
+  return HtmlService.createHtmlOutputFromFile(filename).getContent();
+}

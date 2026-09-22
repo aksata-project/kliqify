@@ -1,0 +1,233 @@
+/**
+ * SETUP & CONFIGURATION
+ * Handles Spreadsheet connections and flexible column mapping.
+ */
+
+const CONFIG = {
+  SPREADSHEET_ID: '13_kIP9il6TO4-WYUH2OkLCiiKO2QHSjMEM95_M9QRRE',
+  // Sheet Names
+  SHEET_MASTER: 'Registrasi/Login', // Main Database
+  SHEET_USERS: 'Registrasi/Login', // Consolidated to master sheet
+  SHEET_FALLBACKS: ['Registrasi/Login', 'Users'], 
+  SHEET_SHORTLINKS: 'Shortlink',
+  SHEET_WITHDRAWALS: 'Withdrawals',
+  SHEET_HISTORY: 'History', // New History Sheet
+  SHEET_CONFIG: 'AppConfig', // Global settings
+  VIEW_VALUE: 5, // 1 View = 5 Rp
+  COLUMNS_SHORTLINK: ['Original URL', 'Shortcode', 'CreatedBy', 'Timestamp'],
+  COLUMNS_HISTORY: ['Timestamp', 'Username', 'Source', 'Views', 'Amount'], // New History Columns
+  
+  // App Domain
+  DOMAIN: 'https://kliqify.my.id/',
+  
+  // Expected Columns (Canonical Names + Aliases)
+  COLS_USERS: {
+    // Identity & Auth
+    JOIN_DATE: ['Tanggal', 'tanggal', 'Date', 'Join_Date'],
+    EMAIL: ['Email', 'email', 'E-mail'],
+    USERNAME: ['Username', 'username', 'User', 'u_name'],
+    PHONE: ['Phone', 'phone', 'WhatsApp'],
+    PASSWORD: ['Password', 'password', 'Pass', 'Key'],
+    USER_TYPE: ['UserType', 'userType', 'Role', 'Type'],
+    
+    // Stats & Profile (Required for Dashboard)
+    NAME: ['Nama', 'Name'],
+    BALANCE: ['Saldo', 'Balance'],
+    TOTAL_VIEW: ['Total_View', 'Views'],
+    VIEW_TODAY: ['View_Today'],
+    TODAY_EARN: ['Today_Earn'],
+    STATUS: ['Status'],
+
+    // Activity Tracking
+    LAST_ACTIVITY_DATE: ['Last_Activity_Date', 'Last_Date'],
+    LAST_ACTIVITY_TYPE: ['Last_Activity_Type', 'Activity_Type'],
+    ANNOUNCEMENT: ['Announcement', 'Pesan'],
+    LAST_ACTIVITY_DETAIL: ['Last_Activity_Detail', 'Activity_Detail', 'Keterangan'],
+    BONUS_DATE: ['Last_Bonus_Date', 'Bonus_Date'],
+    
+    // Withdrawal Info
+    WITHDRAW_PENDING: ['Withdraw_Pending'],
+    WITHDRAW_SUCCESS: ['Withdraw_Success'],
+    LAST_WITHDRAW_STATUS: ['Status_Penarikan', 'Withdrawal_Status'],
+    LINKS_CLAIMED: ['Claimed', 'Links_Claimed', 'Links_Processed']
+  },
+
+  COLS_WITHDRAW: {
+    USER: ['Username', 'User', 'User Name'],
+    AMOUNT: ['Amount', 'Jumlah', 'Nominal'],
+    STATUS: ['Status', 'Keterangan', 'State'],
+    TIMESTAMP: ['Timestamp', 'Waktu', 'Date'],
+    METHOD: ['Method', 'Metode'],
+    ACCOUNT: ['Account', 'Rekening']
+  }
+};
+
+/**
+ * Gets the primary Users sheet.
+ */
+function getUsersSheet() {
+  const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  
+  // STRICTLY look for the configured sheet first
+  let sheet = ss.getSheetByName(CONFIG.SHEET_USERS);
+  
+  // If not found, create it immediately to enforce the new schema
+  if (!sheet) {
+    console.log(`Sheet '${CONFIG.SHEET_USERS}' not found. Creating new one.`);
+    sheet = ss.insertSheet(CONFIG.SHEET_USERS);
+    SpreadsheetApp.flush();
+  }
+  
+  // Always ensure headers on the returned sheet
+  ensureHeaders(sheet);
+  
+  return sheet;
+}
+
+/**
+ * Returns all sheets that might contain user data.
+ */
+function getAllUserSheets() {
+  const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  const names = [CONFIG.SHEET_MASTER, CONFIG.SHEET_USERS, ...CONFIG.SHEET_FALLBACKS];
+  const sheets = [];
+  const seen = new Set();
+  
+  for (const name of names) {
+    if (seen.has(name)) continue;
+    const s = ss.getSheetByName(name);
+    if (s) {
+      ensureHeaders(s); // Force injecting the Links_Claimed column if missing
+      sheets.push(s);
+      seen.add(name);
+    }
+  }
+  return sheets;
+}
+
+/**
+ * Ensures all required columns exist in the sheet.
+ * Appends missing columns to the end of Row 1.
+ */
+function ensureHeaders(sheet) {
+  let lastCol = sheet.getLastColumn();
+  let headers = [];
+  
+  if (lastCol > 0) {
+    try {
+      headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+    } catch (e) {
+      console.warn("Error reading headers, might be empty", e);
+      lastCol = 0;
+    }
+  }
+  
+  const missing = [];
+  
+  for (const [key, aliases] of Object.entries(CONFIG.COLS_USERS)) {
+    if (findColumnIndex(headers, aliases) === -1) {
+      missing.push(aliases[0]); // Add the canonical name
+    }
+  }
+  
+  if (missing.length > 0) {
+    console.log(`Repairing headers for '${sheet.getName()}'. Adding: ${missing.join(', ')}`);
+    const currentLastCol = sheet.getLastColumn();
+    sheet.getRange(1, currentLastCol + 1, 1, missing.length).setValues([missing]);
+    SpreadsheetApp.flush(); // Critical to ensure visibility for next operations
+  }
+}
+
+/**
+ * Helper to find column index case-insensitively.
+ * @param {Array} headers - Row 1 of the sheet
+ * @param {String} columnName - The column name to find (e.g. "Username")
+ * @return {Integer} - 0-based index or -1 if not found
+ */
+/**
+ * Helper to find column index case-insensitively with alias support.
+ * @param {Array} headers - Row 1 of the sheet
+ * @param {String|Array} columnName - The column name(s) to find
+ * @return {Integer} - 0-based index or -1 if not found
+ */
+function findColumnIndex(headers, columnName) {
+  if (!headers || !columnName) return -1;
+  
+  // Convert search terms to array of lowercased strings
+  const searchTerms = (Array.isArray(columnName) ? columnName : [columnName])
+    .map(s => String(s).toLowerCase().trim());
+  
+  for (let i = 0; i < headers.length; i++) {
+    const header = String(headers[i]).toLowerCase().trim();
+    if (searchTerms.includes(header)) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+/**
+ * Get all users data as an array of objects
+ */
+function getAllUsers() {
+  const sheet = getUsersSheet();
+  const data = sheet.getDataRange().getValues();
+  if (data.length < 2) return [];
+  
+  const headers = data[0];
+  const users = [];
+  
+  // Map columns dynamically
+  const colMap = {};
+  for (const [key, val] of Object.entries(CONFIG.COLS_USERS)) {
+    colMap[key] = findColumnIndex(headers, val);
+  }
+  
+  // Determine key columns
+  const userIdx = colMap.USERNAME !== -1 ? colMap.USERNAME : findColumnIndex(headers, 'username');
+  
+  if (userIdx === -1) return []; // Cannot parse without username
+  
+  return data.slice(1);
+}
+
+/**
+ * MANUAL SETUP FUNCTION
+ * Run this function manually from the Google Apps Script editor
+ * to force create any missing columns (like 'Claimed') across all user sheets
+ */
+function MANUAL_SETUP() {
+  const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  
+  // 1. Force setup Users sheet
+  console.log("Starting forced setup for Users Sheet...");
+  getUsersSheet(); // This creates it if missing and runs ensureHeaders
+  
+  // 2. Force setup all fallback/master sheets
+  console.log("Starting forced setup for all fallback/master sheets...");
+  getAllUserSheets(); // This loops through all names and runs ensureHeaders
+  
+  console.log("✅ SETUP COMPLETE! Semua kolom yang kurang (termasuk 'Claimed') sudah ditambahkan ke Spreadsheet.");
+}
+
+/**
+ * UTILITY: FORCE INJECT CLAIMED COLUMN
+ * Run this if MANUAL_SETUP fails to show the column.
+ * This directly forces the column 'Claimed' at the end of the sheet.
+ */
+function FORCE_INJECT_CLAIMED_COLUMN() {
+  const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  const sheets = [ss.getSheetByName(CONFIG.SHEET_USERS), ss.getSheetByName('Users')].filter(Boolean);
+  
+  sheets.forEach(sheet => {
+    const lastCol = sheet.getLastColumn();
+    const headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+    if (!headers.includes('Claimed') && !headers.includes('Links_Claimed')) {
+      sheet.getRange(1, lastCol + 1).setValue('Claimed');
+      console.log(`✅ Forced 'Claimed' column into sheet: ${sheet.getName()} at column ${lastCol + 1}`);
+    } else {
+      console.log(`⚠️ Column 'Claimed' already exists in sheet: ${sheet.getName()}`);
+    }
+  });
+  SpreadsheetApp.flush();
+}

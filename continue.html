@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kliqify - Lanjutkan ke Tujuan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --primary-glow: rgba(5, 150, 105, 0.2);
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --text-dim: #94a3b8;
+            --gradient: linear-gradient(135deg, #10b981, #059669);
+            --radius: 24px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient Background Elements */
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.6;
+        }
+
+        body::before {
+            top: -100px;
+            left: -100px;
+            width: 400px;
+            height: 400px;
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        body::after {
+            bottom: -150px;
+            right: -100px;
+            width: 500px;
+            height: 500px;
+            background: rgba(5, 150, 105, 0.1);
+        }
+
+        /* -- HEADER -- */
+        .header {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+            text-decoration: none;
+        }
+
+        .brand i {
+            font-size: 22px;
+            color: var(--primary);
+            background: #fff;
+            padding: 8px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        /* -- MAIN CONTAINER -- */
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 600px;
+            padding: 40px 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 32px;
+        }
+
+        /* -- PROGRESS BAR -- */
+        .progress-section {
+            width: 100%;
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+        }
+
+        .step-label {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .step-label span {
+            color: var(--primary);
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 8px;
+            background: #f1f5f9;
+            border-radius: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 100px;
+            transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 30px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6));
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+
+            0%,
+            100% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* -- STEP DOTS -- */
+        .step-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .step-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .step-dot.active {
+            width: 24px;
+            background: var(--primary);
+            box-shadow: 0 0 12px var(--primary-glow);
+            border-radius: 4px;
+        }
+
+        .step-dot.done {
+            background: var(--primary-dark);
+        }
+
+        /* -- CARD -- */
+        .card {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
+            padding: 40px 32px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .card-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 20px;
+            background: #ecfdf5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 32px;
+            color: var(--primary);
+            box-shadow: 0 8px 16px rgba(16, 185, 129, 0.1);
+        }
+
+        .card h2 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+
+        .card p {
+            font-size: 16px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        /* -- TIMER -- */
+        .timer-ring {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 28px;
+            position: relative;
+        }
+
+        .timer-ring svg {
+            width: 90px;
+            height: 90px;
+            transform: rotate(-90deg);
+        }
+
+        .timer-ring circle {
+            fill: none;
+            stroke-width: 5;
+        }
+
+        .timer-ring .track {
+            stroke: #f1f5f9;
+        }
+
+        .timer-ring .fill {
+            stroke: var(--primary);
+            stroke-linecap: round;
+            stroke-dasharray: 251;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        .timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        /* -- CONTINUE BUTTON -- */
+        .btn-continue {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 16px;
+            background: var(--gradient);
+            color: #fff;
+            font-weight: 700;
+            font-size: 17px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-continue:disabled {
+            background: #e2e8f0;
+            color: #94a3b8;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-continue:not(:disabled):hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-continue:not(:disabled):active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .btn-continue.ready {
+            animation: pulse-light 2s infinite;
+        }
+
+        @keyframes pulse-light {
+
+            0%,
+            100% {
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 0 0 10px rgba(16, 185, 129, 0.15);
+            }
+        }
+
+
+        /* -- GENERIC STATES -- */
+        .state-wrapper {
+            background: #fff;
+            padding: 48px 32px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+            width: 100%;
+        }
+
+        .loading-spinner {
+            width: 56px;
+            height: 56px;
+            border: 4px solid #f1f5f9;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 24px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .state-wrapper h2 {
+            font-size: 22px;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            font-weight: 800;
+        }
+
+        .state-wrapper p {
+            color: var(--text-muted);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .error-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 20px;
+            background: #fef2f2;
+            color: #ef4444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 32px;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            color: var(--text-main);
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s;
+            margin-top: 24px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        .btn-back:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+            transform: translateY(-1px);
+        }
+
+        .check-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #ecfdf5;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 36px;
+            animation: popIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 12px 24px rgba(16, 185, 129, 0.15);
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            60% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* -- FOOTER -- */
+        .footer {
+            position: relative;
+            z-index: 1;
+            padding: 24px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-dim);
+        }
+
+        .footer a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer a:hover {
+            color: var(--primary);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 16px;
+            }
+
+            .card {
+                padding: 32px 24px;
+            }
+
+            .timer-ring {
+                width: 80px;
+                height: 80px;
+            }
+
+            .timer-ring svg {
+                width: 80px;
+                height: 80px;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <a href="https://kliqify.cokroaksata.my.id" class="brand">
+            <i class="fas fa-link"></i>
+            Kliqify
+        </a>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+
+        <!-- Loading State -->
+        <div id="state-loading" class="state-wrapper">
+            <div class="loading-spinner"></div>
+            <h2>Mempersiapkan Link Tujuan</h2>
+            <p>Mohon tunggu sebentar...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="state-error" class="state-wrapper hidden">
+            <div class="error-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h2>Shortlink Tidak Ditemukan</h2>
+            <p id="error-message">Link yang Anda cari tidak tersedia atau sudah kedaluwarsa.</p>
+            <a href="https://kliqify.cokroaksata.my.id" class="btn-back">
+                <i class="fas fa-arrow-left"></i>
+                Kembali ke Beranda
+            </a>
+        </div>
+
+        <!-- Continue Steps -->
+        <div id="state-continue" class="hidden"
+            style="width:100%;display:flex;flex-direction:column;align-items:center;gap:32px;">
+
+            <!-- Progress -->
+            <div class="progress-section">
+                <div class="step-label">Langkah <span id="step-current">1</span> dari <span>5</span></div>
+                <div class="progress-track">
+                    <div class="progress-fill" id="progress-fill" style="width: 20%"></div>
+                </div>
+                <div class="step-dots">
+                    <div class="step-dot active" data-step="1"></div>
+                    <div class="step-dot" data-step="2"></div>
+                    <div class="step-dot" data-step="3"></div>
+                    <div class="step-dot" data-step="4"></div>
+                    <div class="step-dot" data-step="5"></div>
+                </div>
+            </div>
+
+            <!-- Card -->
+            <div class="card">
+                <div class="card-icon" id="card-icon">
+                    <i class="fas fa-sparkles"></i>
+                </div>
+                <h2 id="card-title">Memuat...</h2>
+                <p id="card-desc">Bersiap-siap untuk konten yang seru!
+                </p>
+
+                <!-- Timer -->
+                <div class="timer-ring" id="timer-ring">
+                    <svg viewBox="0 0 90 90">
+                        <circle class="track" cx="45" cy="45" r="40" />
+                        <circle class="fill" id="timer-circle" cx="45" cy="45" r="40" />
+                    </svg>
+                    <div class="timer-text" id="timer-text">5</div>
+                </div>
+
+                <!-- Continue Button -->
+                <button class="btn-continue" id="btn-continue" disabled>
+                    <i class="fas fa-hourglass-half" id="btn-icon"></i>
+                    <span id="btn-label">Tunggu 5 detik...</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Redirect State -->
+        <div id="state-redirect" class="state-wrapper hidden">
+            <div class="check-icon">
+                <i class="fas fa-check"></i>
+            </div>
+            <h2>Semua Langkah Selesai!</h2>
+            <p>Mengalihkan Anda ke halaman yang dituju...</p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Kliqify &middot;
+            <a href="https://kliqify.cokroaksata.my.id">Beranda</a> &middot;
+            <a href="https://kliqify.cokroaksata.my.id/p/privacypolicy.html">Kebijakan Privasi</a>
+        </p>
+    </footer>
+
+    <script>
+        (function () {
+            'use strict';
+
+            // === CONFIG ===
+            const TOTAL_STEPS = 5;
+            const WAIT_SECONDS = 5; // countdown per step
+            const LANDING_URL = 'https://kliqify.cokroaksata.my.id';
+            const GAS_APP_URL = '<?= GAS_APP_URL ?>';
+
+            // === FUN MESSAGE POOLS ===
+            const funPool = [
+
+                // === TEKNOLOGI & SAINS (101-120) ===
+                { icon: 'fa-robot', title: 'Robot Pertama', desc: 'Konsep robot pertama kali diciptakan oleh Leonardo da Vinci pada tahun 1495 berupa ksatria mekanik!' },
+                { icon: 'fa-code', title: 'Bug Komputer', desc: 'Istilah bug komputer asalnya dari seekor ngengat asli yang tersangkut di dalam mesin komputer Harvard Mark II tahun 1947.' },
+                { icon: 'fa-wifi', title: 'Asal WiFi', desc: 'Teknologi awal WiFi justru ditemukan oleh seorang aktris Hollywood terkenal zaman dulu bernama Hedy Lamarr.' },
+                { icon: 'fa-microchip', title: 'Ponsel vs Apollo', desc: 'Satu buah smartphone modern yang kamu pegang punya jutaan kali lebih banyak memori dari komputer misi Apollo 11 yang ke bulan.' },
+                { icon: 'fa-mouse', title: 'Mouse Kayu', desc: 'Mouse komputer versi paling awal dibuat oleh Douglas Engelbart menggunakan bongkahan kayu kotak pada tahun 1964.' },
+                { icon: 'fa-globe', title: 'Web Pertama', desc: 'Website pertama di dunia masih aktif sampai sekarang. Isinya cuma teks biasa putih hitam tentang apa itu World Wide Web.' },
+                { icon: 'fa-camera-retro', title: 'Foto Pertama', desc: 'Butuh waktu paparan 8 jam tanpa bergerak untuk mengambil satu jepretan foto paling pertama di dunia tahun 1826.' },
+                { icon: 'fa-battery-full', title: 'Baterai Kentang', desc: 'Sebuah kentang rebus yang disambung plat tembaga dan seng ternyata bisa memproduksi listrik ringan lho.' },
+                { icon: 'fa-satellite', title: 'Satelit Buatan', desc: 'Sputnik 1 adalah satelit pertama buatan manusia. Ukurannya dulu cuma sebesar bola basket olahraga.' },
+                { icon: 'fa-lightbulb', title: 'Daya Otak', desc: 'Aktivitas sinyal gelombang listrik dari otak secara konstan sudah cukup untuk bisa menyalakan lampu pijar mini 10 watt.' },
+                { icon: 'fa-calculator', title: 'Mesin Hitung', desc: 'Kalkulator mekanik pertama di dunia dibuat oleh Blaise Pascal pada usia 19 tahun demi membantu ayahnya menghitung pajak.' },
+                { icon: 'fa-video', title: 'Video YouTube', desc: 'Video unggahan pertama di situs YouTube berjudul "Me at the zoo" menampilkan salah satu foundernya di depan kandang gajah.' },
+                { icon: 'fa-gamepad', title: 'Kaset Game', desc: 'Meniup lubang kaset game jadul (Nintendo) sebenarnya cuma mitos dan malah merusak pin kuningan di dalamnya karena ludah.' },
+                { icon: 'fa-music', title: 'Format MP3', desc: 'Standar format audio MP3 diuji coba menggunakan lagu "Tom\'s Diner" karya penyanyi Suzanne Vega.' },
+                { icon: 'fa-mobile', title: 'SMS Perdana', desc: 'Pesan SMS pertama di dunia dikirimkan pada akhir tahun 1992 dan teksnya cuma berisi ucapan: Merry Christmas.' },
+                { icon: 'fa-keyboard', title: 'QWERTY', desc: 'Layout ketik QWERTY sengaja didesain rumit agar pengetik melambat dan tuts mesin tik mekanik lawas tidak sering macet menyangkut.' },
+                { icon: 'fa-envelope', title: 'Logo Email', desc: 'Simbol @ (at) dulunya adalah satuan ukur kuno pedagang zaman abad pertengahan sebelum dipakai oleh internet saat ini.' },
+                { icon: 'fa-floppy-disk', title: 'Disket Pita', desc: 'File berukuran 1 Gigabyte zaman 1980-an jika disimpan ke disket jadul akan butuh tumpukan setinggi gedung 2 lantai.' },
+                { icon: 'fa-print', title: 'Printer 3D', desc: 'Teknologi printer 3D sebenarnya sudah eksis sejak dekade 1980-an, namun hak patennya baru berakhir bebas di era 2000-an.' },
+                { icon: 'fa-virus', title: 'Virus Komputer', desc: 'Creeper adalah virus malware PC pertama di bumi. Ia cuma memunculkan pesan centil: I\'m the creeper, catch me if you can!' },
+
+                // === FAKTA BUMI & ALAM SEMESTA (121-140) ===
+                { icon: 'fa-water', title: 'Air Pasifik', desc: 'Samudera Pasifik saking luar biasa luasnya bisa memuat tumpah ruah semua total dataran daratan di bumi dengan sisa spasi kosong.' },
+                { icon: 'fa-fire-flame-curved', title: 'Lava Dingin', desc: 'Ada satu gunung berapi istimewa di benua Afrika (Ol Doinyo Lengai) yang memuntahkan magma bersuhu sangat dingin dan hitam legam.' },
+                { icon: 'fa-mountain', title: 'Everest Palsu', desc: 'Mauna Kea di Hawaii secara total menjulang tinggi jauh lebih panjang dari Mount Everest jika kita sukat hingga dari pangkal dasar laut.' },
+                { icon: 'fa-wind', title: 'Aroma Hujan', desc: 'Wangi khas setelah rintik hujan turun bernama Petrichor, dihasilkan oleh minyak tanaman dan spora bakteri daratan tanah basah.' },
+                { icon: 'fa-snowflake', title: 'Gletser Minum', desc: 'Lebih dari 68 persen dari total semua asupan ketersediaan Air Tawar dan bersih sedunia masih membeku berbentuk terperangkap dalam bilik gletser.' },
+                { icon: 'fa-leaf', title: 'Hutan Amazon', desc: 'Pasir sahara terbang melintasi sejauh jutaan mil samudera atlantik demi menghantarkan pupuk bernutrisi fosfor esensial bagi Amazon.' },
+                { icon: 'fa-meteor', title: 'Batuan Mars', desc: 'Ternyata sejumlah kepingan batuan meteor berserakan yang jatuh terjun membumi dulunya adalah asli sepotong kecil dari planet Mars.' },
+                { icon: 'fa-seedling', title: 'Pohon Kloning', desc: 'Pando di utara negara Utah adalah hutan luas pepohonan raksasa tapi genetik akarnya bersatu jadi satu organisme tunggal hidup umur 80 ribuan tahun.' },
+                { icon: 'fa-sun', title: 'Kuning Menipu', desc: 'Fisik gumpalan Sang Mentari kita sejujurnya tak berwarna agak kuning, tapi berupa memancarkan cahaya pijar warna Putih murni mentereng!' },
+                { icon: 'fa-cloud', title: 'Gravitasi', desc: 'Di beberapa wilayah Kanada, ukuran gravitasi sedikit direduksi dan menjadi lebih rendah dari tempat lain karena sisa lapisan es purba.' },
+                { icon: 'fa-volcano', title: 'Api Abadi', desc: 'Ada sebuah Kawah pintu neraka raksasa memandu pijar gas meletup tiada ampun di lanskap wilayah Turkmenistan yang apinya terus membara belasan dasawarsa.' },
+                { icon: 'fa-moon', title: 'Gempa Bulan', desc: 'Mirip sama di bumi kita yg punya gejala seismik, fenomena guncangan Moonquake juga secara reguler sering terjadi loh di satelit Bulan.' },
+                { icon: 'fa-globe', title: 'Inti Solid Bumi', desc: 'Suhu di dalam pusat inti bumi ditaksir nyaris sama panasnya dengan temperatur permukaan luar matahari kita.' },
+                { icon: 'fa-droplet', title: 'Danau Mendidih', desc: 'Terdapat sebentuk per-Danauan misterius yang secara ajaib senantiasa Airnya terus memuncak mendidih berkebul dalam negara Dominika alamnya.' },
+                { icon: 'fa-wind', title: 'Angin Topan', desc: 'Tenaga dari dalam pusat badai topan hurikan dewasa merilis setara level kekuatan mematikan dari letusan bom massal setiap detiknya.' },
+                { icon: 'fa-tree', title: 'Rumput Raksasa', desc: 'Tahukah kalian kalau pohon menjulang rimbun Bambu bambu hias ternyata adalah jenis keluarga rumput ilalang sejatian yang cuma menumbuh giga besar!' },
+                { icon: 'fa-snowflake', title: 'Matahari Tengah', desc: 'Lapisan awan pendar kabut es kutub punya ilusi magis pembelokan sinaran Sang Surya bikin siluet penampakan rupa matahari kembar membelah di ujung ufuk!' },
+                { icon: 'fa-mountain-sun', title: 'Pulau Berpindah', desc: 'Negara atol tropis Kiribati adalah tempat petak tanah pemukiman satu-satunya melintang terpotong serempak keempat kuadran garis global belahan hemisfer.' },
+                { icon: 'fa-tree', title: 'Akar Bernapas', desc: 'Rindangnya perakaran Hutan lebat tropis rimba memayungi melimpah luas lebih dari setengah beraneka spesies kawanan hewan global cuma sepertiga luas dunia menampungnya.' },
+                { icon: 'fa-water', title: 'Danau Merah Pink', desc: 'Warnanya mencolok kontras menawan Danau aliran peredam buatan Lake Hillier nuansanya bak susu mawar berwarna pink lantaran keberadaan organisme ganggang khusus.' },
+
+                // === KEBUDAYAAN POP & FILM (141-160) ===
+                { icon: 'fa-film', title: 'Darah Palsu', desc: 'Cipratan merah darah seram tiruan di sebuah pertunjukan film layar hitam putih klasik aslinya tak lain dari sekadar menggunakan sirup manis cokelat!' },
+                { icon: 'fa-music', title: 'Bunyi T Rex', desc: 'Gemuruh desil parau Dinosaurus T-Rex dalam film epik adalah racikan hasil campuran desahan napas buaya, kuda dan bayi gajah.' },
+                { icon: 'fa-mask', title: 'Ninja Gelap', desc: 'Di realita dunia nyata jaman Kekaisaran para agen Ninja sungguhan lebih gemar berseragam baju biasa petani biar lancar kelabui target, bukan seragam hitam.' },
+                { icon: 'fa-film', title: 'Film Terpanjang', desc: 'Rentang waktu Film artistik eksperimen terlama bernama Logistics memecahkan rekor total penayangan selama lebih dari 35 hari berturut-turut tanpa jeda.' },
+                { icon: 'fa-ticket', title: 'Trailer Asli', desc: 'Kata trailer julukan buat teaser iklan promosi bioskop jaman dulunya justeru beneran cuma di-tampilkan ngekor setelah ujung film beres.' },
+                { icon: 'fa-tv', title: 'Tom And Jerry', desc: 'Pasangan dua tokoh kartun ikonik ini dahulunya sewaktu perdana pilot dirilis malah dinamai dengan sebutan Jasper dan Jinx, bukan Tom & Jerry.' },
+                { icon: 'fa-user-ninja', title: 'Jackie Chan', desc: 'Asuransi barat mem-blacklist menolak mendaftarkan seluruh set film si ahli kung fu lantaran resiko tinggi, memaksanya menanggung biayanya sendiri.' },
+                { icon: 'fa-masks-theater', title: 'Alien Suara', desc: 'Suara asing riuh ciapan bising efek robot R2-D2 Star Wars diracik berpadu celotehan nada bunyi bayi diputar dan disintesis ulang alat moog.' },
+                { icon: 'fa-video', title: 'VFX Godzilla', desc: 'Kemenangan piala efek spesial Godzilla Minus One mencengangkan dunia cuma menggunakan budget super mini ditopang sentuhan visual 35 staf kru inti saja!' },
+                { icon: 'fa-clapperboard', title: 'Potongan Layar', desc: 'Adegan tumpah darah ikonik dari lorong di hotel berhantu The Shining mesti ditayang mengulang shoot rekaman sampai berkal-kali take gila ratusan kali set ulang.' },
+                { icon: 'fa-dinosaur', title: 'Velociraptor', desc: 'Wujud purba kadal prasejarah si Velociraptor jurasic ini bentuk sebetulnya jauh beda sekali dia itu penuh bertumbuh selimuti tebal rintik bulu unggas.' },
+                { icon: 'fa-jedi', title: 'Pedang Cahaya', desc: 'Dengungan riuh ciri instrumen Lightsaber andalan Star Wars direkam dari deminngan motor proyektor tua dan tabung televisi bersinggungan langsung ke mikrofon.' },
+                { icon: 'fa-image', title: 'Disney Putih', desc: 'Snow White adalah produk durasi film animasi pertama dari Walt Disney di dunia yang kesuksesan keuntungannya mendanai raksasa studio di era keemasannya.' },
+                { icon: 'fa-spider', title: 'Kelemahan Sutradara', desc: 'Alasan James Cameron membuat desain monster luar angkasanya menakutkan karena fobianya pada jaring dan bentuk kaki rupa anatomi laba-laba raksasa!' },
+                { icon: 'fa-user-secret', title: 'James Bond', desc: 'Namanya Bond agen maut elegan itu meminjam sembarang tajuk dari cover buku ornitologi burung tulisan penulis yang secukupnya pendek ringkas gampang dihafal.' },
+                { icon: 'fa-film', title: 'Pixar Rahasia', desc: 'Coretan simbol A113 muncul di ragam lusinan setiap judul komplotan film Pixar sebagai referensi tribut kode nomor ruang kelas nostalgia animatornya masa kuliah.' },
+                { icon: 'fa-ghost', title: 'Suara Monster', desc: 'Desisan mengerikan si Demogorgon dari serial fiksi Stranger Things diracik menggunakan kombinasi raungan lumba lumba, anjing laut dan parau lolong anak manusia teriakan.' },
+                { icon: 'fa-clapperboard', title: 'Matrix Kode', desc: 'Hujan angka hijau khas rentetan pengkodean peretasan The Matrix sedasarnya cuma hasil jepret pindaian buku cetak resep penganan masakan hidangan jepang dan sushi!' },
+                { icon: 'fa-camera-movie', title: 'Film Bisu', desc: 'Gerakan pelakon film komedi Chaplin per-bisu yang jenaka hiper cepat per second nya cuman karena cacat limitnya kelemahan rekaman dari engkol kameramen mekanik jadul manual.' },
+                { icon: 'fa-music', title: 'Mickey Mouse', desc: 'Bapak pendiri Walt Disney di masa mudanya tak segan mendubbing langsung menyuarakan vokal melengking maskot kartun tikus ikoniknya sang Mickey selama sekeluruhan dekade perdana rilis.' },
+
+                // === FAKTA MENARIK LAINNYA (161-200) ===
+                { icon: 'fa-flag', title: 'Bendera Terbalik', desc: 'Apabila Bendera Filipina berkibar dengan warna Merah diputar diatas, berarti negara tersebut secara resmi menyatakan status siaga masa Perang bahaya.' },
+                { icon: 'fa-person', title: 'Sel Manusia', desc: 'Tubuh orang setahun menghasilkan dan merontokan sel kulit ari sebanyak sampai satu kilogram tumpukan abu debu serutan per tahun.' },
+                { icon: 'fa-building-columns', title: 'Monalisa Asli', desc: 'Kaisar Prancis Napoleon memajang mencopot lukisan mahakarya Monalisa gantung senantiasa diletakan mementeng dinding kamar tidurnya peristiwanya eksklusif untuk dipandangin personal.' },
+                { icon: 'fa-landmark', title: 'Taj Mahal', desc: 'Tiang menara utama bangunan Taj Mahal diarsiteki condong miring keluar agar apabila musibah alam menumbangkan pondasinya tidak akan menggilas hancur peraduan pilar mahkotanya.' },
+                { icon: 'fa-burger', title: 'French Fries', desc: 'French fry kentang kuliner tak sengaja dibikin bermula bukan di Perancis, penganan ini malahan awalnya sebetulnya lahir diresep oleh racikan komunal orang Belgia abad 16.' },
+                { icon: 'fa-face-smile', title: 'Senyum Palsu', desc: 'Berfoto potret jadul melarang tersenyum sumringah lantaran paparannya rekam optik melahap diam tak gerak puluhan menit, senyum konstan diwajah mustahil niscahya di tahan tanpa ngilu rahang.' },
+                { icon: 'fa-money-bill', title: 'Kertas Uang', desc: 'Gepokan uang kertas di dompetmu itu sebetulnya bukan kertas, ia ditenun murni racikan untaian campur linen sutera murni makanya kuat dicuci tak lumer robek peredam binasa!' },
+                { icon: 'fa-pencil', title: 'Karet Penghapus', desc: 'Abad kelam usang sebelum rilis alat penghapus karet, ilmuan jenius zaman kuno menghapuskan tulisan debu pena karbon arsiran memakai ulenan bola roti peroti yang nyaris membusuk usang.' },
+                { icon: 'fa-shield', title: 'Viking Tanduk', desc: 'Stereotip helem pejuang serbuan maritim Viking berlapis sepasang sekat tajam sepasang hiasan tanduk semat sejatinya murni propaganda teatrik opera fantasi sutradara Wagner belaka.' },
+                { icon: 'fa-scale-balanced', title: 'Keadilan Buta', desc: 'Patung Hakim Themis mengikat matanya menutup buta simbolik netralitas buta memutus sidang tiada tebang pamrih menakar kelas bobot tajir miskin penjahat terpandang sekalipun tanpa prasangka butanya adil.' },
+                { icon: 'fa-scissors', title: 'Gunting Da Vinci', desc: 'Gunting rancang canggih ditenun tuas ganda dipercaya digagas idenya Da Vinci walau rupa sederhana gunting tembaga tekuk telah direka leluhurnya ras roma kuno cikal pertamanya ribuan era jauh.' },
+                { icon: 'fa-glass-water', title: 'Cermin Siluman', desc: 'Pantulan bening rona per-kaca pantul di setiap jeda rileks pantul membiaskan sedikit spektrum kehijau-hijauan kelabu di alam dasarnya, cermin bening sesungguhnya berwarna kusam hijau muda.' },
+                { icon: 'fa-pen-nib', title: 'Kidal Cerdas', desc: 'Sejumput gen minoritas kumpulan populasi memikat cerdas Einsten, Da vinci, Obama melintas membelok kognitif menunjukan kendali dominan kognisi fungsi sel kanan otaknya melayani keakuratan lincahnya kiri!' },
+                { icon: 'fa-book-open', title: 'Sandi Terbalik', desc: 'Pergerakan membaca menata terbalik sandi refleksi huruf pudar lincah memukau sejatinya kemampuan alami rahasia menakjubkan kecerdasan terselubung alam bawah naluri instingtif yang terpendam insting sejeniusnya nirkabel.' },
+                { icon: 'fa-crown', title: 'Ratu Mesir', desc: 'Cleopatra sosok keagungan jelita si pesona mesir rupanya adalah keturunan langsung imperium makedonia Yunani berdarah lurus Ptolomeus yang sepercikpun tak bermuatan turunan Mesir berurat pribuminya perawakanya persis bule eropa kuno.' },
+                { icon: 'fa-chess-knight', title: 'Taktik Perang', desc: 'Doktrin panduan perang kuno mematikan strategi Tiongkok Art Of War nya Sun Tzu dipertanyakan sejarawan eksistensinya si panglima jeniusnya betulan tokoh nyata atu hanya kedok belaka merangkum pandangan.' },
+                { icon: 'fa-mask', title: 'Topeng Venesia', desc: 'Hajatan meriah per-karnaval topeng di kota perahu venesia dipelopori menyembunyikan identitas biar penyamar lintas asmara transaksi judi gelap rahasianya asik lepas intai aparat kejamnya raja tiraninya lolos pelacak hukum.' },
+                { icon: 'fa-building', title: 'Kota Bawah', desc: 'Reruntuhan Derinkuyu kapadokia menggali kedalaman delapan tingkat bumi perabot lengkan penampung menelan selusinan marga warga berteduh ancam cuaca iklim purba kejut mutakhirnya mengukir sejaya asrama kota memuai akal perlindungannya tebal bunker sedalam mematikan.' },
+                { icon: 'fa-ship', title: 'Asuransi Laut', desc: 'Konsorsium gerombol per-bajak kelasi maritim brutal malahan memiliki sistem konstitusi tertib, uang ganti luka asuransi, hingga skema pesangon santunan anggota kehilangan tajamnya kakinya raga bertugas sangat tertib sosialis serikat bersekutu berkedilan kejahatannya teratur ruksaknya tertata komando bajak luhur pelaut laut pelik komandan persaudaraannya erat mutlak solider.' },
+                { icon: 'fa-compass', title: 'Rute Columbus', desc: 'Columbus tidak menilik rute belahan perjalan lantaran menguji melebarkan dalih doktrin bumi bulan bundar melainkan siasatinya cari shortcut dagang Asia rempah. Manusia jaman yunani bahari telah sedia sadar mutlaknya bumi ini bulat semampainya astronom logis seukuran erastothenes takhir perhitungkan belah lengkung pelanet tak sekonyong argumen bumi lurus dataran kerdil saja.' }
+,
+                // === ALAM & LUAR ANGKASA (1-20) ===
+                { icon: 'fa-earth-americas', title: 'Fakta Unik', desc: 'Astronot bertambah tinggi 5 cm di luar angkasa karena tulang belakang mereka meregang tanpa gravitasi.' },
+                { icon: 'fa-rocket', title: 'Space Fact', desc: 'Jika kamu bisa mengemudi ke luar angkasa dengan kecepatan 100 km/jam, kamu akan sampai dalam waktu 1 jam!' },
+                { icon: 'fa-sun', title: 'Cahaya Matahari', desc: 'Cahaya matahari butuh 8 menit 20 detik untuk sampai ke Bumi. Sementara kamu nunggu 5 detik saja!' },
+                { icon: 'fa-gem', title: 'Hujan Berlian', desc: 'Hujan berlian terjadi di Jupiter dan Saturnus. Siapkan payung super kuat kalau ke sana!' },
+                { icon: 'fa-moon', title: 'Bulan Menjauh', desc: 'Bulan sebenarnya menjauh dari Bumi 3,8 cm setiap tahun. Pelan-pelan kabur!' },
+                { icon: 'fa-cloud-sun', title: 'Suhu Petir', desc: 'Petir bisa mencapai suhu 30.000° Celcius. Itu 5 kali lebih panas dari permukaan matahari!' },
+                { icon: 'fa-water', title: 'Air Tua', desc: 'Air yang kamu minum saat ini mungkin pernah diminum oleh dinosaurus jutaan tahun lalu!' },
+                { icon: 'fa-meteor', title: 'Bintang Jatuh', desc: 'Bintang jatuh sebenarnya bukanlah bintang, melainkan debu atau batu angkasa yang terbakar di atmosfer bumi.' },
+                { icon: 'fa-snowflake', title: 'Salju Unik', desc: 'Tidak ada dua kepingan salju yang memiliki bentuk sama persis di dunia ini. Setiap keping itu spesial, seperti kamu!' },
+                { icon: 'fa-mountain', title: 'Gunung Tertinggi', desc: 'Gunung tertinggi di tata surya ada di planet Mars, namanya Olympus Mons. Tingginya 3 kali lipat Gunung Everest!' },
+                { icon: 'fa-temperature-low', title: 'Suhu Terdingin', desc: 'Tempat terdingin di alam semesta yang diketahui manusia ada di Bumi, di dalam sebuah laboratorium fisika kuantum.' },
+                { icon: 'fa-tree', title: 'Pohon Bernapas', desc: 'Hutan Amazon menghasilkan 20% oksigen di Bumi. Paru-paru dunia kita butuh dilindungi!' },
+                { icon: 'fa-wind', title: 'Kecepatan Angin', desc: 'Kecepatan angin paling kencang yang pernah tercatat di Bumi adalah 408 km/jam pada saat angin topan.' },
+                { icon: 'fa-fire-flame-curved', title: 'Api Luar Angkasa', desc: 'Api di luar angkasa yang tanpa gravitasi akan berbentuk bulat sempurna seperti bola.' },
+                { icon: 'fa-volcano', title: 'Gunung Berapi', desc: 'Ada lebih banyak gunung berapi di dasar laut (sekitar 1 juta) dibandingkan yang ada di daratan.' },
+                { icon: 'fa-droplet', title: 'Awan Berat', desc: 'Rata-rata awan kumulus beratnya sekitar 500.000 kg, atau setara dengan berat 100 gajah!' },
+                { icon: 'fa-umbrella', title: 'Hujan Asam', desc: 'Hujan di Venus bukanlah air, melainkan tetesan asam sulfat yang mengerikan. Wahana antariksa pun bisa meleleh!' },
+                { icon: 'fa-globe', title: 'Bumi Tidak Bulat', desc: 'Bumi kita sebenarnya tidak bulat sempurna, bentuknya sedikit lonjong seperti telur karena rotasi.' },
+                { icon: 'fa-compass', title: 'Kutub Magnet', desc: 'Kutub Utara magnet bumi selalu bergerak posisinya sekitar 50 km setiap tahun menuju Rusia.' },
+                { icon: 'fa-leaf', title: 'Pohon Berlian', desc: 'Satu pohon dewasa bisa menghasilkan oksigen cukup untuk 2 orang bernapas selama setahun penuh. Go Green!' },
+
+                // === HEWAN & BIOLOGI (21-40) ===
+                { icon: 'fa-cat', title: 'Pecinta Kucing?', desc: 'Kucing lebih banyak tidur dari aktivitas apapun. Rata-rata kucing tidur 13-16 jam sehari. Hidup impian!' },
+                { icon: 'fa-ghost', title: 'Spooky Fact', desc: 'Gurita (Octopus) memiliki 3 jantung dan warna darahnya biru. Mirip seperti alien di Bumi!' },
+                { icon: 'fa-wand-magic-sparkles', title: 'Sidik Jari', desc: 'Sidik jari koala sangat identik dengan manusia. Peneliti forensik pun bisa kebingungan membedakannya!' },
+                { icon: 'fa-dog', title: 'Best Friend', desc: 'Anjing bisa memahami sekitar 250 kata dan gestur. Kepintaran mereka setara dengan balita usia 2 tahun!' },
+                { icon: 'fa-fish', title: 'Dunia Bawah Laut', desc: 'Lebih dari 80% lautan di Bumi belum pernah dipetakan atau dijelajahi manusia. Super misterius!' },
+                { icon: 'fa-spider', title: 'Jaring Superman', desc: 'Sutra laba-laba adalah salah satu material terkuat di alam. Jika seukuran pensil, bisa menghentikan pesawat Boeing 747!' },
+                { icon: 'fa-frog', title: 'Katak Transparan', desc: 'Ada spesies katak kaca di Amerika Tengah yang tubuhnya transparan, kita bisa melihat organ dalamnya berdetak!' },
+                { icon: 'fa-crow', title: 'Burung Pintar', desc: 'Gagak sangat cerdas! Mereka ingat wajah manusia yang pernah jahat padanya dan akan menyimpan dendam seumur hidup.' },
+                { icon: 'fa-dove', title: 'Merpati Merpati', desc: 'Burung Kolibri adalah satu-satunya burung yang bisa terbang mundur atau diam melayang di udara bagai helikopter.' },
+                { icon: 'fa-egg', title: 'Telur Raksasa', desc: 'Telur burung unta adalah telur terbesar di dunia saat ini, beratnya bisa setara 24 telur ayam biasa!' },
+                { icon: 'fa-kiwi-bird', title: 'Burung Tidur', desc: 'Burung Albatros bisa tidur sambil terbang dalam perjalanan jarak jauh melintasi samudera. Keren kan!' },
+                { icon: 'fa-paw', title: 'Hidung Kucing', desc: 'Pola hidung setiap kucing itu unik, mirip persis seperti fungsi sidik jari pada manusia.' },
+                { icon: 'fa-horse', title: 'Kuda Berdiri', desc: 'Kuda bisa tidur sambil berdiri karena mereka punya sistem penguncian khusus di kaki mereka.' },
+                { icon: 'fa-cow', title: 'Sapi Berkawan', desc: 'Sapi ternyata punya "sahabat baik (best friend)" dan akan merasa stres jika dijauhkan dari temannya itu.' },
+                { icon: 'fa-mosquito', title: 'Nyamuk Jahat', desc: 'Nyamuk adalah hewan paling mematikan di dunia karena penyebaran penyakit yang mereka bawa.' },
+                { icon: 'fa-spider-web', title: 'Racun Siput', desc: 'Siput kerucut laut memiliki racun yang mematikan dan tidak ada antivenom-nya. Jangan sentuh kerang sembarangan!' },
+                { icon: 'fa-otter', title: 'Berang-berang', desc: 'Berang-berang laut berpegangan tangan saat tidur agar tidak hanyut terpisah oleh arus air laut.' },
+                { icon: 'fa-hippo', title: 'Kuda Nil', desc: 'Keringat kuda nil berwarna kemerahan atau pink. Ini berfungsi sebagai tabir surya dan antibiotik alami mereka!' },
+                { icon: 'fa-dove', title: 'Pinguin Kawin', desc: 'Pinguin Gentoo akan mencari batu yang paling kerikilnya bundar sempurna untuk "melamar" pasangan betinanya.' },
+                { icon: 'fa-locust', title: 'Kecoa', desc: 'Kecoa bisa bertahan hidup selama beberapa minggu meski tanpa kepala, sampai mereka akhirnya mati kelaparan.' },
+
+                // === MAKANAN & MINUMAN (41-60) ===
+                { icon: 'fa-lightbulb', title: 'Madu Abadi', desc: 'Madu tidak pernah basi. Arkeolog menemukan pot madu berusia 3.000 tahun di makam Mesir yang masih bisa dimakan!' },
+                { icon: 'fa-pizza-slice', title: 'Pizza Time!', desc: 'Setiap detik, sekitar 350 potong pizza dimakan di wilayah Amerika Serikat. Sekarang kamu jadi lapar kan?' },
+                { icon: 'fa-mug-hot', title: 'Coffee Break', desc: 'Kopi pertama ditemukan karena kambing! Peternak Ethiopia melihat kambingnya terlalu energi setelah memakan buah kopi.' },
+                { icon: 'fa-palette', title: 'Warna Makanan', desc: 'Warna biru jarang ada secara alami di makanan kita. Itu sebabnya blueberry terasa sangat otentik dan spesial!' },
+                { icon: 'fa-ice-cream', title: 'Dessert Time', desc: 'Es krim konon diciptakan di China (200 SM) dengan komposisi campuran susu, nasi lembut, dan bongkahan salju utuh!' },
+                { icon: 'fa-fire', title: 'Hot Take', desc: 'Rasa pedas dari cabai sebetulnya adalah sensasi rasa sakit. Capsaicin mengelabui reseptor otakmu!' },
+                { icon: 'fa-cookie-bite', title: 'Snack Time', desc: 'Biskuit Oreo pertama kali rilis pada tahun 1912, jauh sebelum banyak negara merdeka. Sangat bersejarah!' },
+                { icon: 'fa-apple-whole', title: 'Kebun Apel', desc: 'Jika kamu mencoba satu jenis apel baru setiap hari, butuh waktu lebih dari 20 tahun untuk mencicipi semuanya!' },
+                { icon: 'fa-carrot', title: 'Wortel Ungu', desc: 'Dahulu kala, wortel sebenarnya berwarna ungu atau putih, bukan oranye seperti yang lazim kita kenal sekarang.' },
+                { icon: 'fa-burger', title: 'Burger McDonald', desc: 'McDonalds menjual kurang lebih sebanyak 75 burger setiap detiknya di seluruh dunia. Cepat saji yang luar biasa!' },
+                { icon: 'fa-lemon', title: 'Lemon Mengapung', desc: 'Lemon akan mengapung di air karena massanya, sementara jeruk nipis (lime) justru akan selalu tenggelam di air.' },
+                { icon: 'fa-pepper-hot', title: 'Merica Mahal', desc: 'Pada zaman penjelajahan abad ke pertengahan, lada hitam sering dijuluki "emas hitam" karena harganya amat mahal!' },
+                { icon: 'fa-hotdog', title: 'Sosis Terpanjang', desc: 'Rekor sosis terpanjang di dunia mencapai hampir 60 kilometer! Coba hitung butuh roti hotdog sebanyak apa.' },
+                { icon: 'fa-bacon', title: 'Peanut Butter', desc: 'Butuh sekitar 540 kacang tanah panggang untuk menciptakan satu stoples kecil selai kacang yang lezat.' },
+                { icon: 'fa-cheese', title: 'Keju Melimpah', desc: 'Keju adalah produk makanan yang paling sering dicuri di dunia. Bahkan ada kartel keju yang sangat terorganisir!' },
+                { icon: 'fa-bowl-rice', title: 'Oven Microwave', desc: 'Oven microwave pertama di dunia diciptakan secara tidak sengaja gara-gara sebuah permen cokelat yang meleleh di saku ilmuwan.' },
+                { icon: 'fa-martini-glass', title: 'Jus Buah', desc: 'Minum jus anggur sambil minum obat kimia sangat tidak disarankan karena dapat mengganggu proses pemecahan enzim.' },
+                { icon: 'fa-bread-slice', title: 'Roti Panggang', desc: 'Roti tertua di dunia yang pernah ditemukan sudah berumur sekitar 14.000 tahun di gurun wilayah Yordania.' },
+                { icon: 'fa-egg', title: 'Bentuk Telur', desc: 'Ujung telur berbentuk oval dan melengkung tajam agar kalau menggelinding tidak jatuh jauh dari sarangnya.' },
+                { icon: 'fa-wheat', title: 'Nasi Liar', desc: 'Makanan nasi liar (wild rice) sebetulnya bukanlah nasi sama sekali, melainkan spesies rumput air murni.' },
+
+                // === SEJARAH & GEOGRAFI & BUDAYA (61-80) ===
+                { icon: 'fa-plane', title: 'Travel Fact', desc: 'Jepang punya Pulau Kelinci! Di sebuah pulau bernama Okunoshima, kelinci liar jauh lebih banyak dari populasi manusianya.' },
+                { icon: 'fa-music', title: 'Happy Birthday', desc: 'Lagu "Happy Birthday" dulunya memiliki hak cipta ketat. Restoran atau TV yang menyanyikannya wajib bayar royalti!' },
+                { icon: 'fa-gamepad', title: 'Gamer Alert', desc: 'Game Tetris aslinya dibuat oleh ilmuwan Soviet di tahun 1984 saat ia sedang bereksperimen. Game yang sangat ikonik.' },
+                { icon: 'fa-globe-americas', title: 'Benua Es', desc: 'Antartika adalah benua dengan predikat tempat paling kering dan paling berangin di bumi, meski banyak es!' },
+                { icon: 'fa-building', title: 'Piramida', desc: 'Mammoth berbulu ternyata masih hidup di bumi saat Piramida Agung Giza sedang dalam proses panjang pembangunannya.' },
+                { icon: 'fa-monument', title: 'Menara Eiffel', desc: 'Menara Eiffel dapat merenggang bertambah tinggi hingga seukuran 15 cm selama musim panas karena besi memuai!' },
+                { icon: 'fa-champagne-glasses', title: 'Perang Singkat', desc: 'Perang paling singkat dalam sejarah cuma berlangsung selama 38 menit antara Inggris melawan Zanzibar. Kalah Cepat.' },
+                { icon: 'fa-hat-wizard', title: 'Universitas Tua', desc: 'Universitas Oxford ternyata jauh lebih mendahului berdirinya peradaban suku Aztec yang fenomenal di Mexico itu.' },
+                { icon: 'fa-pen-nib', title: 'Ejaan Bahasa', desc: 'Huruf "E" adalah dan merupakan abjad konsonan vokal yang paling sering sekali digunakan di dunia tulisan bahasa Inggris.' },
+                { icon: 'fa-keyboard', title: 'Mengetik', desc: 'Kata ejaan "TYPEWRITER" merupakan rentetan abjad terpanjang yang bisa Anda ketik cuma menggunakan keyboard baris angka teratas.' },
+                { icon: 'fa-language', title: 'Papua Nugini', desc: 'Sebuah negara kepulauan yang bernama Papua Nugini, mempunyai lebih dari 820 bahasa lokal daerah aslinya.' },
+                { icon: 'fa-money-bill', title: 'Uang Monopoli', desc: 'Tiap tahunnya pabrik permainan menyita dan memproduksi uang Monopoli palsu jauh lebih cetak banyak daripada uang tunai asli di Amerika.' },
+                { icon: 'fa-id-card', title: 'Paspor Ratu', desc: 'Hingga akhir wafatnya sang beliau penguasa tertinggi mendiang Ratu Elizabeth II adalah satut-satunya orang yang tidak memerlukan paspor ke Luar negeri.' },
+                { icon: 'fa-map', title: 'Tandas Rusia', desc: 'Rusia total melingkup punya 11 zona batas daerah titik waktu lokal sendiri-sendiri secara keseluruhannya loh sangat luas.' },
+                { icon: 'fa-chess', title: 'Langkah Catur', desc: 'Bermain papan bidak Catur itu ada sangat melebihi jauh bilangan estimasi angka dari seluruh gabungan keberadaan bentuk atom sejagad.' },
+                { icon: 'fa-clock', title: 'Jam Tangan', desc: 'Beriklan dan menjual komersioal Jam seringkali di-setting agar jarum letaknya ke pas pukul pada jam 10 dan lebihnya berada di 10.' },
+                { icon: 'fa-bicycle', title: 'Kota Belanda', desc: 'Di sebuah Kota Amsterdam negara kincir angin itu populasi Sepedanya ada banyak tak tertera dibandingkan daripada seluruh pejalan kakinya.' },
+                { icon: 'fa-shoe-prints', title: 'Kaki Patung', desc: 'Jikalau kaki wujud patung dari si seekor kuda menapaknya cuman diangkat ada Satu dan tinggi, tuannya dulu wafat dari lukanya saat dalam berperang!' },
+                { icon: 'fa-medal', title: 'Medali Emas', desc: 'Total sebuah bentuk kalung penghargaan Medali emas raihan Olimpiade sekarang sebenarnya secara 92.5 persen bahan isian utamanya itu adalah besi Perak.' },
+                { icon: 'fa-camera', title: 'Ponsel Pertama', desc: 'Dulu Ponsel Kamera jadul bentuk pertama di dunia yang bisa foto sangat lambat meresap per-pixel di-selesaikan oleh sang J. Philippe sekitar waktu 1997-an.' },
+
+                // === KESEHATAN, PSIKOLOGI & MOTIVASI (81-100) ===
+                { icon: 'fa-brain', title: 'Fakta Otak', desc: 'Otak kita bisa terus menghasilkan listrik yang lumayan cukup untuk dapat terus nyalakan bohlam lampu redup kecil!' },
+                { icon: 'fa-heart', title: 'Self Care', desc: 'Air putih itu penting! Tubuh kita butuh setidaknya ada asupan takaran air delapan gelas per hari agar fungsi diri bisa maksimal.' },
+                { icon: 'fa-face-laugh-squint', title: 'Tertawalah', desc: 'Rutin Tertawa sekitar terhitung kurun dalam lima belas waktu menit penuh sehari saja cukup membakar nyaris 40 set kalori loh!' },
+                { icon: 'fa-headphones', title: 'Musik Asyik', desc: 'Asyik Mendengarkan aluanan alur nada selera musik favoritmu merilis sekresi dopamin, seperti persis jika memakan serpihan buah cokelat!' },
+                { icon: 'fa-trophy', title: 'Kamu Hebat!', desc: 'Faktanya mutlak: Kamu pasti sudah 100% senantiasa menuntaskan hari fase di kala sangat terburukmu. Tetap selalu ceria semnagat, Pemenang tangguh!' },
+                { icon: 'fa-bicycle', title: 'Ayo Bergerak', desc: 'Langkah ritme dari Bersepeda dan kegiatan selama rutinitas gowes 30 menitan, naikin banget perbaikan suana hati di mood Anda berkali lipat ganda.' },
+                { icon: 'fa-book', title: 'Bookworm', desc: 'Rutinitas seru sekadar cerna Membaca singkat untuk dalam enam ukuran tempo durasi akan menekan turun drastis tingkat level kemunculan stres hingga di rasio 68%.' },
+                { icon: 'fa-star', title: 'Motivasi Diri', desc: 'Setiap dari Sang ahli jagoan apapun, dahulunya jelas ia pasti bermula menjadi tingkat tahapan sesosok per-belajar pemula jua awam.' },
+                { icon: 'fa-eye', title: 'Mata Lelah', desc: 'Sebuah per-Kedipan yang dipicu perihal mem-blok dari tatap mata tiap sepintas ke layar di-bukti ilmiah mumpuni mampu menjaga dari minus.' },
+                { icon: 'fa-shield-heart', title: 'Sistem Imun', desc: 'Struktur Pertahanan Imunitas pelindung fisik si jalinan badan yang luar biasa cerdik sampai tak per-sadar mengenali triliunan ragam bibit virus patologis.' },
+                { icon: 'fa-lungs', title: 'Tarikan Napas', desc: 'Rata-rata volume rekor kapasitas saat orang bernapas adalah kira-kira dua belas atau sampai total dua puluh irama penarik isapan tarikan setiap jeda per-menit-nya.' },
+                { icon: 'fa-bed', title: 'Tidur Malam', desc: 'Kondisi bermimpi waktu di tidurnya ini rata-rata bakal dan mampu ditahan meluangkan rentetan fase panjang satu hinggan dua total jam durasi utuh semalamnya.' },
+                { icon: 'fa-tooth', title: 'Gigi Terkuat', desc: 'Enamel pembalut permukaan cerlang pada lapisan pelindungnya bagian barisan kulum gigi rupanya itu komponen substansi paling dominan keras seantero raganya tubuh manusiawi.' },
+                { icon: 'fa-smile', title: 'Ekspresi Haluan', desc: 'Pancaran untuk mengerahkan seribu simpul Tarikan sebuah mimik otot Wajah ceria demi ciptakan Seutas tersenyum membutuhkan tarikan kontran minimalis set-nya dari Tujuh-Belas persediaan Otot.' },
+                { icon: 'fa-droplet', title: 'Air Susut', desc: 'Ketiadaan unsur dari kadar cair takaran di persentase dari satu rasio di-kurva total berat jangkauan ke badan bakal menyalakan si alarm sistem sensor Haus dahaga instan.' },
+                { icon: 'fa-dna', title: 'Sel Ganti', desc: 'Tiap di durasi dalam periode sekitar kurun jalin pergantian sel tubuh, struktur jasmani memproduksi pulih menata pergantian secara menyeluruh setiap totalan 7 kurun dekade rentang bulanan tahunan.' },
+                { icon: 'fa-fingerprint', title: 'Sidik Unik', desc: 'Lidah di zona panca untuk pengecapan alat kita in pun rupanya menyimpan deret-gurat tekstur dari pola tapak sidik lekukan serabut syaraf unik loh seperti ragam jari kita punya.' },
+                { icon: 'fa-ear-listen', title: 'Indra Pendengar', desc: 'Telinga dari di area kedua samping sisi ini rupa tiada pernah hentinya setop menelaah bertumbuh semakin melar sekian beraneka seiring makin meluas waktu sang raga menjadi Lansia menua.' },
+                { icon: 'fa-apple-whole', title: 'Pencernaan', desc: 'Lambung sangat cerdik secara alamiah bakal konstan mandiri mensintesa rilis hasil kelanjutan ganti lapis terluar rongga pencernanya rentang dwo pekan periode menghalang biar asam cairan pelarut cernaan tak memakan sendirinya.' },
+                { icon: 'fa-person-running', title: 'Tulang Kuat', desc: 'Struktur balok formasi pembentuk pada bagian Rangka Tulang dari di zona femur yaitu tulang selangka paha menandingi lebih lipatan menopang lebih dominan ketahanannya ditimbang bahan sebatang struktur materi beton kaku sekalipun!' }
+            ];
+
+            // Shuffle and pick 5 unique messages
+            function shuffleArray(arr) {
+                var shuffled = arr.slice();
+                for (var i = shuffled.length - 1; i > 0; i--) {
+                    var j = Math.floor(Math.random() * (i + 1));
+                    var temp = shuffled[i];
+                    shuffled[i] = shuffled[j];
+                    shuffled[j] = temp;
+                }
+                return shuffled;
+            }
+            var stepMessages = shuffleArray(funPool).slice(0, 5);
+
+            // === STATE ===
+            let currentStep = 1;
+            let destinationUrl = '';
+            let countdownInterval = null;
+
+            // === DOM ===
+            const stateLoading = document.getElementById('state-loading');
+            const stateError = document.getElementById('state-error');
+            const stateContinue = document.getElementById('state-continue');
+            const stateRedirect = document.getElementById('state-redirect');
+            const errorMessage = document.getElementById('error-message');
+            const stepCurrentEl = document.getElementById('step-current');
+            const progressFill = document.getElementById('progress-fill');
+            const cardIcon = document.getElementById('card-icon');
+            const cardTitle = document.getElementById('card-title');
+            const cardDesc = document.getElementById('card-desc');
+            const timerText = document.getElementById('timer-text');
+            const timerCircle = document.getElementById('timer-circle');
+            const btnContinue = document.getElementById('btn-continue');
+            const btnIcon = document.getElementById('btn-icon');
+            const btnLabel = document.getElementById('btn-label');
+
+            // === ROUTING ===
+            const path = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
+
+            if (!path || path === '' || path === 'index.html') {
+                window.location.href = LANDING_URL;
+                return;
+            }
+
+            // Ignore Blogger system paths
+            if (path.startsWith('p/') || path.startsWith('search') || path.startsWith('feeds/')) return;
+
+            // Extract shortcode
+            const segments = path.split('/');
+            const shortCode = segments[segments.length - 1];
+
+            // === RESOLVE SHORTLINK ===
+            resolveShortlink(shortCode);
+
+            function resolveShortlink(code) {
+                showState('loading');
+                const payload = { action: 'resolveShortlink', parameters: [code] };
+
+                fetch(GAS_APP_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    redirect: 'follow',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                })
+                    .then(function (r) {
+                        var ct = r.headers.get('content-type') || '';
+                        if (ct.includes('application/json')) return r.json();
+                        return r.text().then(function (txt) {
+                            try { return JSON.parse(txt); }
+                            catch (e) { throw new Error('Invalid response'); }
+                        });
+                    })
+                    .then(function (res) {
+                        if (res && res.success && res.url) {
+                            destinationUrl = res.url;
+                            showState('continue');
+                            startCountdown();
+                        } else {
+                            showError(res && res.message ? res.message : 'Shortlink tidak ditemukan.');
+                        }
+                    })
+                    .catch(function (err) {
+                        showError('Gagal menghubungi server. Coba lagi nanti.');
+                    });
+            }
+
+            function shortenUrl(url) {
+                try {
+                    var u = new URL(url);
+                    var display = u.hostname + u.pathname;
+                    return display.length > 40 ? display.substring(0, 37) + '...' : display;
+                } catch (e) {
+                    return url.length > 40 ? url.substring(0, 37) + '...' : url;
+                }
+            }
+
+            // === UI STATE ===
+            function showState(state) {
+                stateLoading.classList.toggle('hidden', state !== 'loading');
+                stateError.classList.toggle('hidden', state !== 'error');
+                stateContinue.classList.toggle('hidden', state !== 'continue');
+                stateRedirect.classList.toggle('hidden', state !== 'redirect');
+            }
+
+            function showError(msg) {
+                errorMessage.textContent = msg;
+                showState('error');
+            }
+
+            // === STEP UI ===
+            function updateStepUI() {
+                var msg = stepMessages[currentStep - 1];
+                stepCurrentEl.textContent = currentStep;
+                progressFill.style.width = ((currentStep / TOTAL_STEPS) * 100) + '%';
+
+                cardIcon.innerHTML = '<i class="fas ' + msg.icon + '"></i>';
+                cardTitle.textContent = msg.title;
+                cardDesc.textContent = msg.desc;
+
+                // Update dots
+                var dots = document.querySelectorAll('.step-dot');
+                dots.forEach(function (dot) {
+                    var s = parseInt(dot.getAttribute('data-step'));
+                    dot.classList.remove('active', 'done');
+                    if (s === currentStep) dot.classList.add('active');
+                    else if (s < currentStep) dot.classList.add('done');
+                });
+            }
+
+            // === COUNTDOWN ===
+            function startCountdown() {
+                updateStepUI();
+
+                var remaining = WAIT_SECONDS;
+                var circumference = 2 * Math.PI * 40; // r=40
+                timerCircle.style.strokeDasharray = circumference;
+                timerCircle.style.strokeDashoffset = '0';
+
+                btnContinue.disabled = true;
+                btnContinue.classList.remove('ready');
+                btnIcon.className = 'fas fa-hourglass-half';
+                btnLabel.textContent = 'Tunggu ' + remaining + ' detik...';
+                timerText.textContent = remaining;
+
+                if (countdownInterval) clearInterval(countdownInterval);
+
+                countdownInterval = setInterval(function () {
+                    remaining--;
+                    timerText.textContent = remaining;
+                    btnLabel.textContent = 'Tunggu ' + remaining + ' detik...';
+
+                    var offset = circumference * (1 - remaining / WAIT_SECONDS);
+                    timerCircle.style.strokeDashoffset = offset;
+
+                    if (remaining <= 0) {
+                        clearInterval(countdownInterval);
+                        countdownInterval = null;
+                        enableButton();
+                    }
+                }, 1000);
+            }
+
+            function enableButton() {
+                btnContinue.disabled = false;
+                btnContinue.classList.add('ready');
+                btnIcon.className = 'fas fa-arrow-right';
+
+                if (currentStep < TOTAL_STEPS) {
+                    btnLabel.textContent = 'Selanjutnya';
+                } else {
+                    btnLabel.textContent = 'Buka Link Tujuan';
+                }
+            }
+
+            // === BUTTON CLICK ===
+            btnContinue.addEventListener('click', function () {
+                if (btnContinue.disabled) return;
+
+                if (currentStep < TOTAL_STEPS) {
+                    currentStep++;
+                    startCountdown();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    showState('redirect');
+                    setTimeout(function () {
+                        window.location.href = destinationUrl;
+                    }, 1200);
+                }
+            });
+
+        })();
+    </script>
+</body>
+
+</html>

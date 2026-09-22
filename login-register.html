@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kliqify | Masuk & Daftar</title>
+    <base target="_top">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #ecfdf5;
+            --secondary: #0f172a;
+            --text-main: #334155;
+            --text-light: #64748b;
+            --surface: #fff;
+            --bg: #f8fafc;
+            --radius: 16px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, .07), 0 2px 4px -1px rgba(0, 0, 0, .06);
+            --gradient: linear-gradient(135deg, #059669, #10b981);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .auth-container {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, .1);
+            width: 100%;
+            max-width: 420px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-back-home {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.3s;
+        }
+
+        .btn-back-home:hover {
+            color: var(--primary);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 18px;
+        }
+
+        .auth-view {
+            display: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .auth-view.active {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+
+        h2 {
+            font-size: 26px;
+            color: var(--secondary);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        p.subtitle {
+            color: var(--text-light);
+            margin-bottom: 24px;
+            font-size: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper>i:first-of-type {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 16px;
+            transition: color 0.3s;
+            pointer-events: none;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s;
+            outline: none;
+            color: var(--secondary);
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-light);
+        }
+
+        input:focus~.btn-eye i,
+        input:focus+.btn-eye i {
+            color: var(--primary);
+        }
+
+        input:focus~i,
+        input:focus+i {
+            color: var(--primary);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: var(--gradient);
+            color: #fff;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            font-family: inherit;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, .3);
+        }
+
+        .auth-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .toggle-text {
+            margin-top: 24px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .toggle-link {
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            margin-left: 4px;
+        }
+
+        .toggle-link:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Terms Checkbox */
+        .terms-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            text-align: left;
+            margin: 16px 0 20px;
+        }
+
+        .terms-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            accent-color: var(--primary);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .terms-group label {
+            font-size: 13px;
+            color: var(--text-light);
+            line-height: 1.5;
+            cursor: pointer;
+        }
+
+        .terms-group a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .terms-group a:hover {
+            text-decoration: underline;
+        }
+
+        .auth-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Password eye toggle */
+        .btn-eye {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 4px;
+            font-size: 15px;
+            transition: color 0.2s;
+            line-height: 1;
+            z-index: 2;
+        }
+
+        .btn-eye:hover {
+            color: var(--primary);
+        }
+
+        /* Password match indicator */
+        .pass-match-badge {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .pass-match-badge.match {
+            display: flex;
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .pass-match-badge.no-match {
+            display: flex;
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* Policy View styles */
+        .policy-tabs {
+            display: flex;
+            gap: 8px;
+            margin: 15px 0 25px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #f8fafc;
+            padding: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .policy-tab-btn {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 10px;
+            background: transparent;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .policy-tab-btn:hover:not(.active) {
+            background: #f1f5f9;
+            color: var(--secondary);
+        }
+
+        .policy-tab-btn.active {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+        }
+
+        .policy-body {
+            max-height: 55vh;
+            overflow-y: auto;
+            text-align: left;
+            font-size: 15px;
+            line-height: 1.8;
+            color: #475569;
+            padding-right: 16px;
+            margin-bottom: 25px;
+        }
+
+        .policy-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .policy-body::-webkit-scrollbar-track {
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+
+        .policy-body::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .policy-body::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .policy-body h4 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--secondary);
+            margin: 28px 0 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .policy-body h4::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+
+        .policy-body h4:first-child {
+            margin-top: 0;
+        }
+
+        .policy-body p {
+            margin-bottom: 14px;
+        }
+
+        .policy-body ul,
+        .policy-body ol {
+            margin: 8px 0 16px 24px;
+            padding-left: 0;
+        }
+
+        .policy-body li {
+            margin-bottom: 8px;
+            padding-left: 6px;
+            position: relative;
+        }
+
+        .policy-body li::marker {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .policy-body strong {
+            color: var(--secondary);
+            font-weight: 700;
+        }
+
+        .policy-content-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .policy-content-section.active {
+            display: block;
+        }
+
+        .btn-kembali {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: #f8fafc;
+            color: var(--secondary);
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-kembali:hover {
+            background: #f1f5f9;
+            transform: translateY(-2px);
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        /* ===== MOBILE RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            body {
+                padding: 0;
+                align-items: stretch;
+            }
+
+            .auth-container {
+                padding: 40px 24px;
+                border-radius: 0;
+                max-width: 100%;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                box-shadow: none;
+                border: none;
+            }
+
+            .logo {
+                margin-top: auto;
+            }
+
+            .btn-back-home {
+                top: 20px;
+                left: 20px;
+            }
+
+            .auth-view {
+                margin-bottom: auto;
+            }
+
+            h2 {
+                font-size: 22px !important;
+            }
+
+            .policy-body {
+                max-height: 65vh;
+            }
+
+            .policy-tabs {
+                gap: 4px;
+                padding: 4px;
+            }
+
+            .policy-tab-btn {
+                font-size: 13px;
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="auth-container">
+        <!-- Back to Home -->
+        <a href="<?= appUrl ?>" class="btn-back-home">
+            <i class="fas fa-arrow-left"></i> Kembali
+        </a>
+
+        <a href="<?= appUrl ?>" class="logo">
+            <div class="logo-icon"><i class="fas fa-link"></i></div> Kliqify
+        </a>
+
+        <!-- Login View -->
+        <div id="login-view" class="auth-view active">
+            <h2>Selamat Datang</h2>
+            <p class="subtitle">Masuk untuk mengelola link Anda.</p>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Username</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="login-user" required placeholder="Masukkan username">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="login-pass" required placeholder="********"
+                            style="padding-right: 44px;">
+                        <button type="button" class="btn-eye" onclick="togglePasswordVisibility('login-pass', this)"
+                            tabindex="-1">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="terms-group" style="margin: 8px 0 16px;">
+                    <input type="checkbox" id="login-remember">
+                    <label for="login-remember">Ingat Saya</label>
+                </div>
+                <button type="submit" class="auth-btn">Masuk</button>
+            </form>
+            <p class="toggle-text">Belum punya akun? <span class="toggle-link" onclick="switchView('register')">Daftar
+                    Sekarang</span></p>
+        </div>
+
+        <!-- Register View -->
+        <div id="register-view" class="auth-view">
+            <h2>Buat Akun Baru</h2>
+            <p class="subtitle">Bergabung dan mulai hasilkan uang.</p>
+            <form onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="reg-email" required placeholder="contoh@email.com">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Username</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="reg-user" required placeholder="Pilih username unik">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Nomor Telepon</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" id="reg-phone" required placeholder="08xxxxxxxxxx">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="reg-pass" required placeholder="Minimal 6 karakter"
+                            style="padding-right: 44px;">
+                        <button type="button" class="btn-eye" onclick="togglePasswordVisibility('reg-pass', this)"
+                            tabindex="-1">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Ulangi Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="reg-pass-confirm" required placeholder="Ketik ulang password"
+                            style="padding-right: 44px;" oninput="checkPasswordMatch()">
+                        <button type="button" class="btn-eye"
+                            onclick="togglePasswordVisibility('reg-pass-confirm', this)" tabindex="-1">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="pass-match-badge" id="pass-match-badge">
+                        <i class="fas fa-check-circle"></i> <span>Password cocok</span>
+                    </div>
+                </div>
+                <div class="terms-group">
+                    <input type="checkbox" id="reg-terms" onchange="toggleDaftarBtn()">
+                    <label for="reg-terms">Saya menyetujui <a href="javascript:void(0)"
+                            onclick="openPolicyView('tos')">Syarat &
+                            Ketentuan</a> dan <a href="javascript:void(0)" onclick="openPolicyView('privacy')">Kebijakan
+                            Privasi</a>
+                        Kliqify.</label>
+                </div>
+                <button type="submit" class="auth-btn" id="btn-daftar" disabled>Daftar Sekarang</button>
+            </form>
+            <p class="toggle-text">Sudah punya akun? <span class="toggle-link"
+                    onclick="switchView('login')">Masuk</span></p>
+        </div>
+        <!-- Policy View -->
+        <div id="policy-view" class="auth-view">
+            <h2 style="font-size: 24px; margin-bottom: 8px;"><i class="fas fa-shield-alt"
+                    style="color:var(--primary); margin-right: 8px;"></i> Kebijakan Kliqify</h2>
+            <p class="subtitle" style="margin-bottom: 5px;">Syarat & Ketentuan serta Privasi</p>
+
+            <div class="policy-tabs">
+                <button class="policy-tab-btn active" id="ptab-tos" onclick="switchPolicyTab('tos')">Syarat &
+                    Ketentuan</button>
+                <button class="policy-tab-btn" id="ptab-privacy" onclick="switchPolicyTab('privacy')">Kebijakan
+                    Privasi</button>
+            </div>
+            <div class="policy-body">
+                <!-- ToS -->
+                <div id="policy-tos" class="policy-content-section active">
+                    <h4>1. Pendahuluan</h4>
+                    <p>Selamat datang di Kliqify ("Kami", "Platform", atau "Layanan"). Syarat dan Ketentuan Layanan ini
+                        ("Ketentuan") merupakan perjanjian hukum yang mengikat antara Anda ("Pengguna") dengan Kliqify.
+                        Dengan mendaftar atau menggunakan layanan kami, Anda menyatakan telah membaca, memahami, dan
+                        menyetujui seluruh isi Ketentuan ini.</p>
+
+                    <h4>2. Definisi Layanan</h4>
+                    <p>Kliqify adalah platform berbasis web yang menyediakan layanan pengelolaan tautan (link
+                        management) serta fitur monetisasi bagi pengguna terdaftar, mencakup:</p>
+                    <ul>
+                        <li>Pembuatan dan pengelolaan akun pengguna;</li>
+                        <li>Pelacakan aktivitas klik (views) dan pendapatan (earnings);</li>
+                        <li>Sistem penarikan dana (withdrawal) ke rekening terdaftar;</li>
+                        <li>Fitur-fitur tambahan yang mungkin dikembangkan di masa mendatang.</li>
+                    </ul>
+
+                    <h4>3. Persyaratan Pendaftaran</h4>
+                    <ol>
+                        <li>Berusia minimal <strong>17 tahun</strong> atau mendapat persetujuan orang tua/wali;</li>
+                        <li>Menyediakan informasi yang <strong>akurat, lengkap, dan terkini</strong>;</li>
+                        <li>Tidak menggunakan identitas palsu atau identitas orang lain;</li>
+                        <li>Hanya memiliki <strong>1 (satu) akun</strong> per individu.</li>
+                    </ol>
+
+                    <h4>4. Kewajiban Pengguna</h4>
+                    <ul>
+                        <li>Menjaga kerahasiaan kata sandi dan keamanan akun;</li>
+                        <li>Memberitahukan kepada kami jika terjadi penggunaan tidak sah;</li>
+                        <li>Menggunakan layanan sesuai hukum yang berlaku di Indonesia;</li>
+                        <li>Tidak melakukan tindakan yang merugikan platform atau pengguna lain.</li>
+                    </ul>
+
+                    <h4>5. Larangan Penggunaan</h4>
+                    <ul>
+                        <li>Memanipulasi sistem views dengan bot, auto-click, atau metode artifisial;</li>
+                        <li>Menyebarkan konten SARA, pornografi, kekerasan, atau ilegal;</li>
+                        <li>Melakukan serangan siber atau upaya mengganggu infrastruktur;</li>
+                        <li>Menjual, memindahtangankan, atau menyewakan akun;</li>
+                        <li>Menggunakan layanan untuk pencucian uang atau aktivitas ilegal.</li>
+                    </ul>
+
+                    <h4>6. Monetisasi dan Penarikan Dana</h4>
+                    <ul>
+                        <li>Tarif per view ditentukan oleh Kliqify dan dapat berubah dengan pemberitahuan;</li>
+                        <li>Pendapatan hanya dihitung berdasarkan views yang <strong>valid dan organik</strong>;</li>
+                        <li>Penarikan tunduk pada batas minimum dan verifikasi identitas;</li>
+                        <li>Kliqify berhak menahan penarikan jika terdeteksi pelanggaran.</li>
+                    </ul>
+
+                    <h4>7. Hak Kekayaan Intelektual</h4>
+                    <p>Seluruh konten, desain, kode, merek dagang, dan material platform merupakan hak milik eksklusif
+                        Kliqify dan dilindungi oleh hukum hak cipta yang berlaku.</p>
+
+                    <h4>8. Batasan Tanggung Jawab</h4>
+                    <ul>
+                        <li>Layanan disediakan "sebagaimana adanya" (as is) tanpa jaminan ketersediaan 100%;</li>
+                        <li>Kliqify tidak bertanggung jawab atas kerugian langsung maupun tidak langsung dari penggunaan
+                            layanan;</li>
+                        <li>Kliqify tidak bertanggung jawab atas tindakan pihak ketiga di luar kendali kami.</li>
+                    </ul>
+
+                    <h4>9. Penghentian Akun</h4>
+                    <p>Kliqify berhak menangguhkan atau menghentikan akun yang melanggar Ketentuan ini tanpa
+                        pemberitahuan. Pengguna dapat mengajukan banding melalui email resmi.</p>
+
+                    <h4>10. Perubahan Ketentuan</h4>
+                    <p>Kliqify berhak mengubah Ketentuan sewaktu-waktu. Perubahan akan diberitahukan melalui platform.
+                        Kelanjutan penggunaan dianggap sebagai persetujuan.</p>
+
+                    <h4>11. Hukum yang Berlaku</h4>
+                    <p>Ketentuan ini diatur berdasarkan hukum Negara Kesatuan Republik Indonesia. Sengketa akan
+                        diselesaikan secara musyawarah terlebih dahulu, dan jika tidak berhasil, melalui pengadilan yang
+                        berwenang di Indonesia.</p>
+
+                    <h4>12. Kontak</h4>
+                    <p><strong>Email:</strong> support@kliqify.com</p>
+                </div>
+
+                <!-- Privacy Policy -->
+                <div id="policy-privacy" class="policy-content-section">
+                    <p>Kebijakan Privasi ini menjelaskan bagaimana Kliqify mengumpulkan, menggunakan, menyimpan, dan
+                        melindungi data pribadi Anda, dengan mengacu pada:</p>
+                    <ul>
+                        <li><strong>UU No. 27 Tahun 2022</strong> tentang Pelindungan Data Pribadi (UU PDP);</li>
+                        <li><strong>UU No. 11 Tahun 2008</strong> jo. UU No. 19 Tahun 2016 tentang ITE;</li>
+                        <li><strong>PP No. 71 Tahun 2019</strong> tentang Penyelenggaraan Sistem dan Transaksi
+                            Elektronik.</li>
+                    </ul>
+
+                    <h4>1. Data yang Dikumpulkan</h4>
+                    <p><strong>Diberikan langsung:</strong> Email, username, nomor telepon, kata sandi (hash), informasi
+                        rekening untuk penarikan.</p>
+                    <p><strong>Dikumpulkan otomatis:</strong> Aktivitas penggunaan (views, klik), informasi perangkat,
+                        alamat IP, riwayat transaksi, log aktivitas akun.</p>
+
+                    <h4>2. Dasar Hukum Pemrosesan</h4>
+                    <ul>
+                        <li><strong>Persetujuan eksplisit</strong> — saat mendaftar dan mencentang kotak persetujuan;
+                        </li>
+                        <li><strong>Pelaksanaan perjanjian</strong> — untuk menyediakan layanan yang diminta;</li>
+                        <li><strong>Kepentingan sah</strong> — menjaga keamanan dan mencegah penipuan.</li>
+                    </ul>
+
+                    <h4>3. Tujuan Penggunaan Data</h4>
+                    <ol>
+                        <li>Membuat, memverifikasi, dan mengelola akun;</li>
+                        <li>Memproses transaksi dan penarikan dana;</li>
+                        <li>Mengirim notifikasi penting terkait layanan;</li>
+                        <li>Mendeteksi dan mencegah aktivitas penipuan;</li>
+                        <li>Menganalisis penggunaan platform (data agregat/anonim);</li>
+                        <li>Memenuhi kewajiban hukum.</li>
+                    </ol>
+
+                    <h4>4. Penyimpanan dan Keamanan</h4>
+                    <ul>
+                        <li>Data disimpan pada infrastruktur cloud Google dengan sertifikasi keamanan internasional;
+                        </li>
+                        <li>Kata sandi disimpan dalam bentuk <strong>hash</strong> yang tidak dapat dibaca;</li>
+                        <li>Akses ke database dibatasi hanya untuk personel berwenang;</li>
+                        <li>Prinsip <strong>minimisasi data</strong> diterapkan.</li>
+                    </ul>
+
+                    <h4>5. Hak Subjek Data (UU PDP)</h4>
+                    <ol>
+                        <li><strong>Hak Akses</strong> — mendapatkan salinan data Anda;</li>
+                        <li><strong>Hak Koreksi</strong> — meminta perbaikan data tidak akurat;</li>
+                        <li><strong>Hak Penghapusan</strong> — meminta penghapusan data (kecuali diwajibkan hukum);</li>
+                        <li><strong>Hak Pembatasan</strong> — membatasi pemrosesan dalam kondisi tertentu;</li>
+                        <li><strong>Hak Keberatan</strong> — mengajukan keberatan atas pemrosesan;</li>
+                        <li><strong>Hak Portabilitas</strong> — mendapatkan data dalam format yang dapat dibaca mesin;
+                        </li>
+                        <li><strong>Hak Penarikan Persetujuan</strong> — menarik persetujuan kapan saja.</li>
+                    </ol>
+
+                    <h4>6. Pembagian Data</h4>
+                    <p>Kami <strong>tidak menjual data pribadi Anda</strong>. Data hanya dibagikan kepada:</p>
+                    <ul>
+                        <li><strong>Penyedia Layanan</strong> — mitra teknis (Google) yang terikat kerahasiaan;</li>
+                        <li><strong>Kewajiban Hukum</strong> — jika diwajibkan oleh perintah pengadilan;</li>
+                        <li><strong>Perlindungan Hak</strong> — untuk melindungi hak dan keselamatan platform.</li>
+                    </ul>
+
+                    <h4>7. Cookies</h4>
+                    <p>Platform dapat menggunakan cookies untuk memelihara sesi login dan menganalisis penggunaan secara
+                        agregat. Anda dapat mengatur preferensi cookies melalui browser.</p>
+
+                    <h4>8. Pelindungan Data Anak</h4>
+                    <p>Layanan tidak ditujukan untuk anak di bawah 17 tahun. Data anak yang teridentifikasi akan segera
+                        dihapus.</p>
+
+                    <h4>9. Perubahan Kebijakan</h4>
+                    <p>Kami berhak memperbarui Kebijakan Privasi sewaktu-waktu. Perubahan material akan diberitahukan
+                        melalui platform.</p>
+
+                    <h4>10. Kontak Pengelola Data</h4>
+                    <p><strong>Email:</strong> support@kliqify.com — Kami menanggapi permintaan dalam waktu paling
+                        lambat <strong>14 hari kerja</strong> sesuai UU PDP.</p>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid #e2e8f0; padding-top: 20px; margin-top: auto;">
+                <div class="btn-kembali" onclick="switchView('register')">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Pendaftaran
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Shared Components: Custom Alert, Confirm & Toast -->
+    <style>
+        /* --- TOAST NOTIFICATIONS --- */
+        .song-toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            pointer-events: none;
+        }
+
+        .song-toast {
+            background: white;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.15);
+            border-radius: 12px;
+            padding: 14px 20px;
+            min-width: 300px;
+            max-width: 400px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+            border-left: 4px solid #cbd5e1;
+            pointer-events: auto;
+            font-family: 'Outfit', sans-serif;
+            opacity: 0;
+        }
+
+        .song-toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .song-toast.success {
+            border-left-color: #10b981;
+        }
+
+        .song-toast.error {
+            border-left-color: #ef4444;
+        }
+
+        .song-toast.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .song-toast.info {
+            border-left-color: #3b82f6;
+        }
+
+        .song-toast-icon {
+            font-size: 20px;
+            margin-top: 2px;
+        }
+
+        .song-toast.success .song-toast-icon {
+            color: #10b981;
+        }
+
+        .song-toast.error .song-toast-icon {
+            color: #ef4444;
+        }
+
+        .song-toast.warning .song-toast-icon {
+            color: #f59e0b;
+        }
+
+        .song-toast.info .song-toast-icon {
+            color: #3b82f6;
+        }
+
+        .song-toast-content {
+            flex: 1;
+        }
+
+        .song-toast-title {
+            font-weight: 600;
+            font-size: 15px;
+            color: #0f172a;
+            margin-bottom: 2px;
+        }
+
+        .song-toast-message {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.4;
+        }
+
+        .song-toast-close {
+            background: none;
+            border: none;
+            padding: 4px;
+            cursor: pointer;
+            color: #94a3b8;
+            transition: color 0.2s;
+        }
+
+        .song-toast-close:hover {
+            color: #0f172a;
+        }
+
+        /* --- CUSTOM MODAL ALERT/CONFIRM --- */
+        .custom-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .custom-modal-backdrop.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .custom-modal-box {
+            background: white;
+            width: 90%;
+            max-width: 420px;
+            padding: 32px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            text-align: center;
+            transform: scale(0.95) translateY(10px);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            font-family: 'Outfit', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .custom-modal-backdrop.active .custom-modal-box {
+            transform: scale(1) translateY(0);
+        }
+
+        .custom-modal-icon {
+            width: 64px;
+            height: 64px;
+            background: #f1f5f9;
+            color: #64748b;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .custom-modal-icon.success {
+            background: #ecfdf5;
+            color: #10b981;
+        }
+
+        .custom-modal-icon.error {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .custom-modal-icon.warning {
+            background: #fef3c7;
+            color: #f59e0b;
+        }
+
+        .custom-modal-icon.info {
+            background: #dbeafe;
+            color: #3b82f6;
+        }
+
+        .custom-modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .custom-modal-message {
+            font-size: 16px;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        .custom-modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-family: inherit;
+        }
+
+        .modal-btn.primary {
+            background: #10b981;
+            color: white;
+            flex: 1;
+        }
+
+        .modal-btn.primary:hover {
+            background: #059669;
+        }
+
+        .modal-btn.secondary {
+            background: #f1f5f9;
+            color: #475569;
+            flex: 1;
+        }
+
+        .modal-btn.secondary:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .modal-btn.danger {
+            background: #ef4444;
+            color: white;
+            flex: 1;
+        }
+
+        .modal-btn.danger:hover {
+            background: #dc2626;
+        }
+    </style>
+
+    <!-- HTML Structure -->
+    <div id="toast-container" class="song-toast-container"></div>
+
+    <div id="custom-modal-backdrop" class="custom-modal-backdrop">
+        <div class="custom-modal-box">
+            <div id="modal-icon" class="custom-modal-icon"><i class="fas fa-info"></i></div>
+            <h3 id="modal-title" class="custom-modal-title">Title</h3>
+            <p id="modal-message" class="custom-modal-message">Message goes here...</p>
+            <div id="modal-actions" class="custom-modal-actions">
+                <!-- Buttons injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check URL param to determine initial view
+        let isAuthActionInProgress = false;
+
+        // --- Auto-Login (Ingat Saya) ---
+        function checkStoredLogin() {
+            const savedUser = localStorage.getItem('kliqify_username');
+            const savedPass = localStorage.getItem('kliqify_password');
+            if (savedUser && savedPass) {
+                const loginView = document.getElementById('login-view');
+                const subtitle = loginView.querySelector('.subtitle');
+                if (subtitle) subtitle.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sedang memuat sesi Anda...';
+
+                // Silent auth attempt
+                google.script.run
+                    .withSuccessHandler(res => {
+                        if (res.success) {
+                            window.top.location.href = '/';
+                        } else {
+                            localStorage.removeItem('kliqify_username');
+                            localStorage.removeItem('kliqify_password');
+                            if (subtitle) subtitle.innerHTML = 'Sesi berakhir. Silakan masuk kembali.';
+                        }
+                    })
+                    .withFailureHandler(err => {
+                        if (subtitle) subtitle.innerHTML = 'Masuk untuk mengelola link Anda.';
+                    })
+                    .login(savedUser, savedPass);
+            }
+        }
+
+        function switchView(view) {
+            document.querySelectorAll('.auth-view').forEach(el => el.classList.remove('active'));
+            document.getElementById(view + '-view').classList.add('active');
+        }
+
+        // --- Password Toggle (show/hide) ---
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+                btn.style.color = 'var(--primary)';
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+                btn.style.color = '';
+            }
+        }
+
+        // --- Password Match Indicator ---
+        function checkPasswordMatch() {
+            const pass = document.getElementById('reg-pass').value;
+            const confirm = document.getElementById('reg-pass-confirm').value;
+            const badge = document.getElementById('pass-match-badge');
+            const confirmInput = document.getElementById('reg-pass-confirm');
+
+            if (!confirm) {
+                badge.className = 'pass-match-badge';
+                confirmInput.style.borderColor = '';
+                return;
+            }
+
+            if (pass === confirm) {
+                badge.className = 'pass-match-badge match';
+                badge.innerHTML = '<i class="fas fa-check-circle"></i> <span>Password cocok</span>';
+                confirmInput.style.borderColor = '#16a34a';
+                confirmInput.style.boxShadow = '0 0 0 4px rgba(22,163,74,0.1)';
+            } else {
+                badge.className = 'pass-match-badge no-match';
+                badge.innerHTML = '<i class="fas fa-times-circle"></i> <span>Password tidak cocok</span>';
+                confirmInput.style.borderColor = '#dc2626';
+                confirmInput.style.boxShadow = '0 0 0 4px rgba(220,38,38,0.1)';
+            }
+        }
+
+        // --- Policy View & Button Toggle ---
+        function toggleDaftarBtn() {
+            const checked = document.getElementById('reg-terms').checked;
+            document.getElementById('btn-daftar').disabled = !checked;
+        }
+
+        function openPolicyView(tab) {
+            switchView('policy');
+            switchPolicyTab(tab || 'tos');
+        }
+
+        function switchPolicyTab(tab) {
+            document.querySelectorAll('.policy-content-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.policy-tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('policy-' + tab).classList.add('active');
+            document.getElementById('ptab-' + tab).classList.add('active');
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            if (isAuthActionInProgress) return;
+            isAuthActionInProgress = true;
+
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+            btn.disabled = true;
+
+            const user = document.getElementById('login-user').value.trim();
+            const pass = document.getElementById('login-pass').value;
+            const remember = document.getElementById('login-remember').checked;
+
+            google.script.run
+                .withSuccessHandler(function (res) {
+                    if (res.success) {
+                        // Always store credentials — localStorage IS the session in the SPA
+                        localStorage.setItem('kliqify_username', res.userData && res.userData.Username ? res.userData.Username : user);
+                        localStorage.setItem('kliqify_password', pass);
+                        if (res.userData) {
+                            localStorage.setItem("kliqify_nama", res.userData.Nama || user);
+                            localStorage.setItem("kliqify_status", res.userData.Status || "Active");
+                            localStorage.setItem("kliqify_role", res.userData.UserType ? res.userData.UserType.toLowerCase() : 'user');
+                        }
+
+                        // Cross-domain sync: redirect through GAS domain to set localStorage there,
+                        // then GAS redirects back to the Blogger dashboard
+                        const syncUser = res.userData && res.userData.Username ? res.userData.Username : user;
+                        const gasUrl = (typeof appUrl !== 'undefined' && appUrl) ? appUrl : 'https://kliqify.cokroaksata.my.id';
+                        const dashboardUrl = window.location.origin + '/';
+
+                        CustomAlert.show('Login Berhasil!', 'Klik OK untuk melanjutkan ke Dashboard.', 'success')
+                            .then(() => {
+                                window.top.location.href = gasUrl + '?action=login&user=' + encodeURIComponent(syncUser) + '&redirect=' + encodeURIComponent(dashboardUrl);
+                            });
+                    } else {
+                        CustomAlert.show('Gagal Masuk', res.message, 'error');
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                        isAuthActionInProgress = false;
+                    }
+                })
+                .withFailureHandler(function (err) {
+                    CustomAlert.show('Error', 'Terjadi kesalahan sistem: ' + err.message, 'error');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    isAuthActionInProgress = false;
+                })
+                .login(user, pass);
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            if (isAuthActionInProgress) return;
+            isAuthActionInProgress = true;
+
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mendaftar...';
+            btn.disabled = true;
+
+            const email = document.getElementById('reg-email').value.trim();
+            const user = document.getElementById('reg-user').value.trim();
+            const phone = document.getElementById('reg-phone').value.trim();
+            const pass = document.getElementById('reg-pass').value;
+            const passConfirm = document.getElementById('reg-pass-confirm').value;
+            const termsChecked = document.getElementById('reg-terms').checked;
+
+            if (!email || !/\S+@\S+\.\S+/.test(email)) {
+                CustomAlert.show('Validasi Gagal', 'Format email tidak valid.', 'warning');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                return;
+            }
+            if (user.length < 3) {
+                CustomAlert.show('Validasi Gagal', 'Username minimal 3 karakter.', 'warning');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                return;
+            }
+            if (!phone || phone.length < 10) {
+                CustomAlert.show('Validasi Gagal', 'Nomor telepon minimal 10 digit.', 'warning');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                return;
+            }
+            if (pass.length < 6) {
+                CustomAlert.show('Validasi Gagal', 'Password minimal 6 karakter.', 'warning');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                return;
+            }
+            if (pass !== passConfirm) {
+                CustomAlert.show('Validasi Gagal', 'Password dan konfirmasi password tidak cocok.', 'warning');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                return;
+            }
+            if (!termsChecked) {
+                CustomAlert.show('Validasi Gagal', 'Anda harus menyetujui Syarat & Ketentuan dan Kebijakan Privasi untuk mendaftar.', 'warning');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                return;
+            }
+
+            google.script.run
+                .withSuccessHandler(function (res) {
+                    if (res.success) {
+                        CustomAlert.show('Pendaftaran Berhasil!', 'Akun Anda telah dibuat. Klik OK untuk melanjutkan.', 'success')
+                            .then(() => {
+                                window.top.location.href = '/';
+                            });
+                    } else {
+                        CustomAlert.show('Gagal Daftar', res.message, 'error');
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                        isAuthActionInProgress = false;
+                    }
+                })
+                .withFailureHandler(function (err) {
+                    CustomAlert.show('Error', 'Terjadi kesalahan sistem: ' + err.message, 'error');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    isAuthActionInProgress = false;
+                })
+                .registerUser({ email: email, username: user, phone: phone, password: pass });
+        }
+    </script>
+</body>
+
+</html>

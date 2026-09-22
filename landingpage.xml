@@ -1,0 +1,2221 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html b:css='false' b:defaultwidgetversion='2' b:layoutsVersion='3' b:responsive='true' b:templateUrl='vegeclub.xml' b:templateVersion='1.0.0' expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+  <b:include data='blog' name='all-head-content'/>
+  <title>Kliqify | Hasilkan Uang dari Setiap Klik</title>
+  
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    
+    <base target="_top"/>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+    <!-- INLINE CSS AS REQUESTED -->
+    
+
+  <b:skin><![CDATA[
+
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #ecfdf5;
+            --secondary: #0f172a;
+            --secondary-light: #1e293b;
+            --text-main: #334155;
+            --text-light: #64748b;
+            --surface: #fff;
+            --bg: #f8fafc;
+            --gradient: linear-gradient(135deg, #059669, #10b981);
+            --gradient-dark: linear-gradient(135deg, #0f172a, #1e293b);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, .07), 0 2px 4px -1px rgba(0, 0, 0, .06);
+            --shadow-lg: 0 20px 40px -12px rgba(0, 0, 0, .12);
+            --radius: 16px;
+            --container: 1200px
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-main);
+            background: var(--bg);
+            line-height: 1.6;
+            overflow-x: hidden
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit
+        }
+
+        ul {
+            list-style: none
+        }
+
+        .container {
+            max-width: var(--container);
+            margin: 0 auto;
+            padding: 0 24px
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all .3s;
+            cursor: pointer;
+            font-size: 15px;
+            border: none;
+            font-family: inherit
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, .4)
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, .5)
+        }
+
+        .btn-outline {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            background: transparent
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-light)
+        }
+
+        .btn-white {
+            background: #fff;
+            color: var(--secondary);
+            box-shadow: var(--shadow)
+        }
+
+        .btn-white:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg)
+        }
+
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: .5px;
+            text-transform: uppercase
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px
+        }
+
+        .section-title h2 {
+            font-size: 40px;
+            font-weight: 800;
+            color: var(--secondary);
+            margin-bottom: 16px;
+            letter-spacing: -.5px
+        }
+
+        .section-title p {
+            font-size: 18px;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto
+        }
+
+        /* NAVBAR */
+        .navbar {
+            padding: 16px 0;
+            background: rgba(255, 255, 255, .85);
+            backdrop-filter: blur(20px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 0, 0, .06)
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .navbar .logo {
+            transform: translateY(3px);
+        }
+
+        .footer .logo {
+            transform: translateX(-6px);
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: var(--gradient);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 18px
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center
+        }
+
+        .nav-link {
+            font-weight: 500;
+            color: var(--text-main);
+            transition: color .3s;
+            cursor: pointer;
+            font-size: 15px;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            color: var(--primary)
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--secondary)
+        }
+
+        /* HERO */
+        .hero {
+            padding: 140px 0 80px;
+            position: relative;
+            overflow: hidden
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(16, 185, 129, .08) 0%, transparent 70%);
+            border-radius: 50%
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, .06) 0%, transparent 70%);
+            border-radius: 50%
+        }
+
+        .hero .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 60px;
+            position: relative;
+            z-index: 2
+        }
+
+        .hero-content h1 {
+            font-size: 58px;
+            line-height: 1.08;
+            font-weight: 800;
+            color: var(--secondary);
+            margin-bottom: 24px;
+            letter-spacing: -1px
+        }
+
+        .hero-content h1 span {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent
+        }
+
+        .hero-content p {
+            font-size: 19px;
+            color: var(--text-light);
+            margin-bottom: 36px;
+            max-width: 90%;
+            line-height: 1.7
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 40px
+        }
+
+        .hero-trust {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 14px;
+            color: var(--text-light)
+        }
+
+        .hero-trust .avatars {
+            display: flex
+        }
+
+        .hero-trust .avatars span {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            margin-left: -8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: #fff
+        }
+
+        .hero-trust .avatars span:first-child {
+            margin-left: 0
+        }
+
+        .hero-trust .rating {
+            color: #f59e0b
+        }
+
+        /* Hero Visual */
+        .hero-visual {
+            position: relative
+        }
+
+        .dashboard-preview {
+            background: linear-gradient(160deg, #0f172a 0%, #1a2640 100%);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 30px 80px -15px rgba(0, 0, 0, .5), 0 0 0 1px rgba(255, 255, 255, .06);
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .dashboard-preview::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(16, 185, 129, .12), transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%
+        }
+
+        .preview-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 0
+        }
+
+        .preview-stat {
+            background: rgba(255, 255, 255, .06);
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, .08);
+            transition: background .3s;
+        }
+
+        .preview-stat:hover {
+            background: rgba(255, 255, 255, .09);
+        }
+
+        .preview-stat .label {
+            font-size: 10px;
+            color: #94a3b8;
+            margin-bottom: 2px;
+            font-weight: 500;
+            letter-spacing: .3px;
+            text-transform: uppercase;
+        }
+
+        .preview-stat .val {
+            font-size: 17px;
+            font-weight: 700;
+            color: #fff
+        }
+
+        .preview-stat .val.green {
+            color: #10b981
+        }
+
+        .preview-chart {
+            background: rgba(255, 255, 255, .04);
+            border-radius: 12px;
+            padding: 8px 12px;
+            height: 90px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(16, 185, 129, .15)
+        }
+
+        .preview-chart svg {
+            width: 100%;
+            height: 100%
+        }
+
+        .preview-chart-label {
+            font-size: 10px;
+            color: #64748b;
+            margin: 10px 0 4px;
+            letter-spacing: .3px;
+        }
+
+        /* Preview URL bar */
+        .preview-url-bar {
+            flex: 1;
+            background: rgba(255, 255, 255, .07);
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 11px;
+            color: #94a3b8;
+            margin-left: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Stat icon */
+        .stat-icon-wrap {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            margin-bottom: 6px
+        }
+
+        /* Growth badge below stat */
+        .stat-badge-up {
+            margin-top: 4px;
+            font-size: 10px;
+            color: #10b981;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        /* Link list inside dashboard preview */
+        .preview-links {
+            margin-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .preview-link-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, .05);
+            border-radius: 8px;
+            padding: 7px 10px;
+        }
+
+        .link-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .link-info {
+            flex: 1;
+        }
+
+        .link-name {
+            font-size: 11px;
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+
+        .link-views {
+            font-size: 10px;
+            color: #64748b;
+        }
+
+        .link-earn {
+            font-size: 11px;
+            font-weight: 600;
+            color: #10b981;
+        }
+
+        /* Glow behind card */
+        .hero-glow {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 60px;
+            background: radial-gradient(ellipse at center, rgba(16, 185, 129, .35), transparent 70%);
+            filter: blur(20px);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .floating-badge {
+            position: absolute;
+            background: rgba(15, 23, 42, .85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, .1);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, .4), 0 0 0 1px rgba(255, 255, 255, .05);
+            border-radius: 14px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: floatBadge 5s ease-in-out infinite;
+            z-index: 3
+        }
+
+        .floating-badge.b1 {
+            top: -15px;
+            right: -10px;
+            animation-delay: 0s
+        }
+
+        .floating-badge.b2 {
+            bottom: 20px;
+            left: -20px;
+            animation-delay: 2.5s
+        }
+
+        .floating-badge .badge-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px
+        }
+
+        .floating-badge .badge-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: #f1f5f9
+        }
+
+        .floating-badge .badge-sub {
+            font-size: 11px;
+            color: #94a3b8
+        }
+
+        @keyframes floatBadge {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(-12px)
+            }
+        }
+
+        /* BRANDS */
+        .brands {
+            padding: 60px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, .06)
+        }
+
+        .brands-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 48px;
+            flex-wrap: wrap;
+            opacity: .4
+        }
+
+        .brands-inner span {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--secondary);
+            letter-spacing: 1px
+        }
+
+        /* FEATURES */
+        .features {
+            padding: 100px 0;
+            background: #fff
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px
+        }
+
+        .feature-card {
+            padding: 36px;
+            background: var(--bg);
+            border-radius: var(--radius);
+            transition: all .3s;
+            border: 1px solid transparent;
+            cursor: default
+        }
+
+        .feature-card:hover {
+            background: #fff;
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(16, 185, 129, .15);
+            transform: translateY(-6px)
+        }
+
+        .feature-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 20px
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--secondary);
+            font-weight: 700
+        }
+
+        .feature-card p {
+            color: var(--text-light);
+            font-size: 15px;
+            line-height: 1.7
+        }
+
+        /* HOW IT WORKS */
+        .steps {
+            padding: 100px 0;
+            background: var(--bg)
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+            position: relative
+        }
+
+        .steps-grid::before {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 12%;
+            width: 76%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), #3b82f6);
+            opacity: .2
+        }
+
+        .step-card {
+            text-align: center;
+            position: relative;
+            z-index: 2
+        }
+
+        .step-num {
+            width: 56px;
+            height: 56px;
+            background: var(--gradient);
+            color: #fff;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 22px;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, .3);
+            transition: transform .3s
+        }
+
+        .step-card:hover .step-num {
+            transform: scale(1.1) rotate(-5deg)
+        }
+
+        .step-card h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: var(--secondary)
+        }
+
+        .step-card p {
+            font-size: 14px;
+            color: var(--text-light);
+            max-width: 200px;
+            margin: 0 auto
+        }
+
+        /* EARNINGS TABLE */
+        .earnings {
+            padding: 100px 0;
+            background: #fff
+        }
+
+        .earnings-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center
+        }
+
+        .earnings-info h2 {
+            font-size: 38px;
+            font-weight: 800;
+            color: var(--secondary);
+            margin-bottom: 16px;
+            letter-spacing: -.5px
+        }
+
+        .earnings-info p {
+            font-size: 17px;
+            color: var(--text-light);
+            margin-bottom: 32px;
+            line-height: 1.7
+        }
+
+        .earnings-features {
+            display: flex;
+            flex-direction: column;
+            gap: 16px
+        }
+
+        .earn-feature {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            background: var(--bg);
+            border-radius: 12px;
+            transition: all .2s
+        }
+
+        .earn-feature:hover {
+            background: var(--primary-light)
+        }
+
+        .earn-feature i {
+            color: var(--primary);
+            font-size: 18px;
+            width: 20px;
+            text-align: center
+        }
+
+        .earn-feature span {
+            font-size: 15px;
+            font-weight: 500
+        }
+
+        .rate-table {
+            background: var(--secondary);
+            border-radius: 20px;
+            padding: 32px;
+            color: #fff
+        }
+
+        .rate-table h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .rate-table h3 i {
+            color: var(--primary)
+        }
+
+        .rate-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+            font-size: 15px
+        }
+
+        .rate-row:last-child {
+            border-bottom: none
+        }
+
+        .rate-row .country {
+            color: #94a3b8
+        }
+
+        .rate-row .rate {
+            color: var(--primary);
+            font-weight: 700
+        }
+
+        /* STATS BANNER */
+        .stats-banner {
+            padding: 80px 0;
+            background: var(--gradient-dark);
+            position: relative;
+            overflow: hidden
+        }
+
+        .stats-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+            text-align: center;
+            position: relative;
+            z-index: 2
+        }
+
+        .stat-item h2 {
+            font-size: 44px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 4px
+        }
+
+        .stat-item p {
+            font-size: 15px;
+            color: #94a3b8;
+            font-weight: 500
+        }
+
+        /* TESTIMONIALS */
+        .testimonials {
+            padding: 100px 0;
+            background: var(--bg)
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px
+        }
+
+        .testi-card {
+            background: #fff;
+            padding: 32px;
+            border-radius: var(--radius);
+            border: 1px solid rgba(0, 0, 0, .06);
+            transition: all .3s
+        }
+
+        .testi-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px)
+        }
+
+        .testi-stars {
+            color: #f59e0b;
+            margin-bottom: 16px;
+            font-size: 14px
+        }
+
+        .testi-text {
+            font-size: 15px;
+            color: var(--text-main);
+            margin-bottom: 20px;
+            line-height: 1.7;
+            font-style: italic
+        }
+
+        .testi-author {
+            display: flex;
+            align-items: center;
+            gap: 12px
+        }
+
+        .testi-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 15px;
+            color: #fff
+        }
+
+        .testi-author h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--secondary)
+        }
+
+        .testi-author span {
+            font-size: 12px;
+            color: var(--text-light)
+        }
+
+        /* CTA */
+        .cta {
+            padding: 100px 0;
+            background: #fff
+        }
+
+        .cta-box {
+            background: var(--gradient-dark);
+            border-radius: 24px;
+            padding: 64px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cta-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(16, 185, 129, .15), transparent 70%);
+            border-radius: 50%
+        }
+
+        .cta-box h2 {
+            font-size: 40px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 2
+        }
+
+        .cta-box p {
+            font-size: 18px;
+            color: #94a3b8;
+            margin-bottom: 36px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 2
+        }
+
+        .cta-box .btn {
+            position: relative;
+            z-index: 2
+        }
+
+        /* FOOTER */
+        .footer {
+            background: var(--secondary);
+            color: #fff;
+            padding: 60px 0 20px
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px
+        }
+
+        .footer-brand p {
+            color: #94a3b8;
+            margin-top: 16px;
+            max-width: 280px;
+            font-size: 14px;
+            line-height: 1.7
+        }
+
+        .footer-col h4 {
+            font-size: 15px;
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-weight: 600
+        }
+
+        .footer-col ul li {
+            margin-bottom: 12px
+        }
+
+        .footer-col a {
+            color: #cbd5e1;
+            transition: color .3s;
+            cursor: pointer;
+            font-size: 14px
+        }
+
+        .footer-col a:hover {
+            color: #fff
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px
+        }
+
+        .footer-social a {
+            height: 36px;
+            padding: 0 12px;
+            background: rgba(255, 255, 255, .08);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            transition: all .3s;
+            font-size: 14px;
+            gap: 8px;
+            text-decoration: none;
+            width: fit-content;
+        }
+
+        .footer-social a:hover {
+            background: var(--primary);
+            color: #fff
+        }
+
+        .footer-bottom {
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, .08);
+            text-align: center;
+            color: #64748b;
+            font-size: 13px
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, .7);
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .3s;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all
+        }
+
+        .modal-box {
+            background: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            transform: translateY(20px);
+            transition: transform .3s;
+            position: relative
+        }
+
+        .modal-overlay.active .modal-box {
+            transform: translateY(0)
+        }
+
+        .modal-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: var(--primary);
+            font-size: 24px
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #94a3b8
+        }
+
+        /* RESPONSIVE */
+        @media(max-width:1024px) {
+
+            .features-grid,
+            .steps-grid,
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .earnings-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .hero::before {
+                width: 600px;
+                height: 600px;
+            }
+        }
+
+        @media(max-width:768px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            .navbar {
+                padding: 12px 0;
+            }
+
+            /* Mobile Menu */
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: #fff;
+                padding: 20px;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+                border-top: 1px solid #eee;
+                gap: 16px;
+                text-align: center;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+                background: none;
+                border: none;
+                font-size: 24px;
+                color: var(--secondary);
+                cursor: pointer;
+            }
+
+            .hero {
+                padding: 120px 0 60px;
+            }
+
+            .hero .container {
+                grid-template-columns: 1fr;
+                text-align: center
+            }
+
+            .hero-content h1 {
+                font-size: 34px;
+                line-height: 1.25;
+            }
+
+            .hero-content p {
+                font-size: 16px;
+                margin: 0 auto 24px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                justify-content: center;
+                gap: 12px;
+                width: 100%;
+                max-width: 300px;
+                margin: 0 auto 30px;
+            }
+
+            .hero-buttons .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .hero-trust {
+                justify-content: center;
+            }
+
+            .hero-visual {
+                margin-top: 40px;
+            }
+
+            /* Grids collapse to 1 column */
+            .features-grid,
+            .testimonials-grid,
+            .steps-grid,
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            /* Sections padding reduction */
+            .features,
+            .steps,
+            .earnings,
+            .testimonials,
+            .cta,
+            .stats-banner {
+                padding: 60px 0;
+            }
+
+            .cta-box {
+                padding: 40px 24px;
+            }
+
+            .cta-box h2 {
+                font-size: 28px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .section-title h2 {
+                font-size: 28px;
+            }
+
+            .section-title {
+                margin-bottom: 40px;
+            }
+
+            .rate-table {
+                padding: 20px;
+            }
+
+            .earnings-info h2 {
+                font-size: 28px;
+            }
+
+            /* Remove steps horizontal line on mobile */
+            .steps-grid::before {
+                display: none;
+            }
+        }
+
+        /* SPA VIEW LOGIC */
+        .page-view {
+            display: none;
+            animation: fadeInPage 0.3s;
+        }
+
+        .page-view.active {
+            display: block;
+        }
+
+        @keyframes fadeInPage {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .page-header {
+            padding: 120px 0 60px;
+            text-align: center;
+            background: var(--gradient-dark);
+            color: #fff;
+        }
+
+        .page-content {
+            padding: 60px 0;
+            background: #fff;
+            min-height: 500px;
+        }
+
+        .content-box {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .content-box h2 {
+            color: var(--secondary);
+            margin-top: 30px;
+            margin-bottom: 16px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .content-box p {
+            margin-bottom: 20px;
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+
+        .content-box ul {
+            padding-left: 20px;
+            list-style: disc;
+            margin-bottom: 20px;
+            color: var(--text-light);
+        }
+
+        .content-box li {
+            margin-bottom: 10px;
+        }
+
+        /* FAQ Style */
+        .accordion-item {
+            border-bottom: 1px solid #eee;
+            padding: 24px 0;
+        }
+
+        .accordion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--secondary);
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+
+        .accordion-header:hover {
+            color: var(--primary);
+        }
+
+        .accordion-header i {
+            transition: transform 0.3s;
+            color: var(--text-light);
+        }
+
+        .accordion-item.active .accordion-header i {
+            transform: rotate(180deg);
+            color: var(--primary);
+        }
+
+        .accordion-body {
+            display: none;
+            margin-top: 16px;
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+
+        .accordion-item.active .accordion-body {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        /* Help Style */
+        .contact-card {
+            background: var(--bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .contact-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 20px;
+        }
+
+        .contact-card h3 {
+            font-size: 24px;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+
+        .contact-card p {
+            color: var(--text-light);
+            margin-bottom: 24px;
+        }
+
+        /* Logged-in user badge in navbar */
+        .nav-user-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            background: var(--gradient);
+            color: #fff;
+            cursor: pointer;
+            transition: all .3s;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, .4);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .nav-user-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, .5);
+            color: #fff;
+        }
+
+        .nav-user-btn i {
+            font-size: 16px;
+        }
+
+        /* Red notification dot on mobile hamburger */
+        .mobile-menu-btn {
+            position: relative;
+        }
+
+        .hamburger-dot {
+            display: none;
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 10px;
+            height: 10px;
+            background: #ef4444;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            animation: pulseDot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseDot {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.3);
+            }
+        }
+    
+
+        /* --- TOAST NOTIFICATIONS --- */
+        .song-toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            pointer-events: none;
+        }
+
+        .song-toast {
+            background: white;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.15);
+            border-radius: 12px;
+            padding: 14px 20px;
+            min-width: 300px;
+            max-width: 400px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+            border-left: 4px solid #cbd5e1;
+            pointer-events: auto;
+            font-family: 'Outfit', sans-serif;
+            opacity: 0;
+        }
+
+        .song-toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .song-toast.success {
+            border-left-color: #10b981;
+        }
+
+        .song-toast.error {
+            border-left-color: #ef4444;
+        }
+
+        .song-toast.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .song-toast.info {
+            border-left-color: #3b82f6;
+        }
+
+        .song-toast-icon {
+            font-size: 20px;
+            margin-top: 2px;
+        }
+
+        .song-toast.success .song-toast-icon {
+            color: #10b981;
+        }
+
+        .song-toast.error .song-toast-icon {
+            color: #ef4444;
+        }
+
+        .song-toast.warning .song-toast-icon {
+            color: #f59e0b;
+        }
+
+        .song-toast.info .song-toast-icon {
+            color: #3b82f6;
+        }
+
+        .song-toast-content {
+            flex: 1;
+        }
+
+        .song-toast-title {
+            font-weight: 600;
+            font-size: 15px;
+            color: #0f172a;
+            margin-bottom: 2px;
+        }
+
+        .song-toast-message {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.4;
+        }
+
+        .song-toast-close {
+            background: none;
+            border: none;
+            padding: 4px;
+            cursor: pointer;
+            color: #94a3b8;
+            transition: color 0.2s;
+        }
+
+        .song-toast-close:hover {
+            color: #0f172a;
+        }
+
+        /* --- CUSTOM MODAL ALERT/CONFIRM --- */
+        .custom-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .custom-modal-backdrop.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .custom-modal-box {
+            background: white;
+            width: 90%;
+            max-width: 420px;
+            padding: 32px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            text-align: center;
+            transform: scale(0.95) translateY(10px);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            font-family: 'Outfit', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .custom-modal-backdrop.active .custom-modal-box {
+            transform: scale(1) translateY(0);
+        }
+
+        .custom-modal-icon {
+            width: 64px;
+            height: 64px;
+            background: #f1f5f9;
+            color: #64748b;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .custom-modal-icon.success {
+            background: #ecfdf5;
+            color: #10b981;
+        }
+
+        .custom-modal-icon.error {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .custom-modal-icon.warning {
+            background: #fef3c7;
+            color: #f59e0b;
+        }
+
+        .custom-modal-icon.info {
+            background: #dbeafe;
+            color: #3b82f6;
+        }
+
+        .custom-modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .custom-modal-message {
+            font-size: 16px;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        .custom-modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-family: inherit;
+        }
+
+        .modal-btn.primary {
+            background: #10b981;
+            color: white;
+            flex: 1;
+        }
+
+        .modal-btn.primary:hover {
+            background: #059669;
+        }
+
+        .modal-btn.secondary {
+            background: #f1f5f9;
+            color: #475569;
+            flex: 1;
+        }
+
+        .modal-btn.secondary:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .modal-btn.danger {
+            background: #ef4444;
+            color: white;
+            flex: 1;
+        }
+
+        .modal-btn.danger:hover {
+            background: #dc2626;
+        }
+    
+
+    /* Fix Blogger Section Wrapper for Flex Layouts */
+    body .main.section {
+      display: contents;
+    }
+    div#main.main.section {
+      display: contents;
+    }
+    .widget {
+      display: contents;
+    }
+    .widget-content {
+      display: contents;
+    }
+
+  ]]></b:skin>
+</head>
+<body>
+  <b:section class='main' id='main' showaddelement='yes'>
+    <b:widget id='HTML1' locked='false' title='Main App' type='HTML' version='2' visible='true'>
+      <b:includable id='main'>
+<script>
+//<![CDATA[
+eval(decodeURIComponent(window.atob('dmFyJTIwQ3VzdG9tVG9hc3QlMjAlM0QlMjAlN0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBzaG93JTI4bWVzc2FnZSUyQyUyMHR5cGUlMjAlM0QlMjAlMjdzdWNjZXNzJTI3JTJDJTIwdGl0bGUlMjAlM0QlMjBudWxsJTI5JTIwJTdCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwY29uc3QlMjBjb250YWluZXIlMjAlM0QlMjBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCUyOCUyN3RvYXN0LWNvbnRhaW5lciUyNyUyOSUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGlmJTIwJTI4JTIxY29udGFpbmVyJTI5JTIwcmV0dXJuJTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwY29uc3QlMjB0b2FzdCUyMCUzRCUyMGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQlMjglMjdkaXYlMjclMjklM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjB0b2FzdC5jbGFzc05hbWUlMjAlM0QlMjAlNjBzb25nLXRvYXN0JTIwJTI0JTdCdHlwZSU3RCU2MCUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGxldCUyMGljb25DbGFzcyUyMCUzRCUyMCUyN2ZhLWNoZWNrLWNpcmNsZSUyNyUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGlmJTIwJTI4dHlwZSUyMCUzRCUzRCUzRCUyMCUyN2Vycm9yJTI3JTI5JTIwaWNvbkNsYXNzJTIwJTNEJTIwJTI3ZmEtZXhjbGFtYXRpb24tY2lyY2xlJTI3JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwaWYlMjAlMjh0eXBlJTIwJTNEJTNEJTNEJTIwJTI3d2FybmluZyUyNyUyOSUyMGljb25DbGFzcyUyMCUzRCUyMCUyN2ZhLWV4Y2xhbWF0aW9uLXRyaWFuZ2xlJTI3JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwaWYlMjAlMjh0eXBlJTIwJTNEJTNEJTNEJTIwJTI3aW5mbyUyNyUyOSUyMGljb25DbGFzcyUyMCUzRCUyMCUyN2ZhLWluZm8tY2lyY2xlJTI3JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwY29uc3QlMjBkaXNwbGF5VGl0bGUlMjAlM0QlMjB0aXRsZSUyMCU3QyU3QyUyMCUyOHR5cGUuY2hhckF0JTI4MCUyOS50b1VwcGVyQ2FzZSUyOCUyOSUyMCUyQiUyMHR5cGUuc2xpY2UlMjgxJTI5JTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwdG9hc3QuaW5uZXJIVE1MJTIwJTNEJTIwJTYwJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTNDZGl2JTIwY2xhc3MlM0QlMjJzb25nLXRvYXN0LWljb24lMjIlM0UlM0NpJTIwY2xhc3MlM0QlMjJmYXMlMjAlMjQlN0JpY29uQ2xhc3MlN0QlMjIlM0UlM0MvaSUzRSUzQy9kaXYlM0UlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlM0NkaXYlMjBjbGFzcyUzRCUyMnNvbmctdG9hc3QtY29udGVudCUyMiUzRSUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUzQ2RpdiUyMGNsYXNzJTNEJTIyc29uZy10b2FzdC10aXRsZSUyMiUzRSUyNCU3QmRpc3BsYXlUaXRsZSU3RCUzQy9kaXYlM0UlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlM0NkaXYlMjBjbGFzcyUzRCUyMnNvbmctdG9hc3QtbWVzc2FnZSUyMiUzRSUyNCU3Qm1lc3NhZ2UlN0QlM0MvZGl2JTNFJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTNDL2RpdiUzRSUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUzQ2J1dHRvbiUyMGNsYXNzJTNEJTIyc29uZy10b2FzdC1jbG9zZSUyMiUyMG9uY2xpY2slM0QlMjJ0aGlzLnBhcmVudEVsZW1lbnQucmVtb3ZlJTI4JTI5JTIyJTNFJTNDaSUyMGNsYXNzJTNEJTIyZmFzJTIwZmEtdGltZXMlMjIlM0UlM0MvaSUzRSUzQy9idXR0b24lM0UlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlNjAlM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBjb250YWluZXIuYXBwZW5kQ2hpbGQlMjh0b2FzdCUyOSUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMHJlcXVlc3RBbmltYXRpb25GcmFtZSUyOCUyOCUyOSUyMCUzRCUzRSUyMCU3QiUyMHRvYXN0LmNsYXNzTGlzdC5hZGQlMjglMjdzaG93JTI3JTI5JTNCJTIwJTdEJTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwc2V0VGltZW91dCUyOCUyOCUyOSUyMCUzRCUzRSUyMCU3QiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGlmJTIwJTI4dG9hc3QucGFyZW50Tm9kZSUyOSUyMCU3QiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMHRvYXN0LmNsYXNzTGlzdC5yZW1vdmUlMjglMjdzaG93JTI3JTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwc2V0VGltZW91dCUyOCUyOCUyOSUyMCUzRCUzRSUyMHRvYXN0LnJlbW92ZSUyOCUyOSUyQyUyMDQwMCUyOSUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCU3RCUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCU3RCUyQyUyMDQwMDAlMjklM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlN0QlMEElMjAlMjAlMjAlMjAlN0QlM0IlMEElMjAlMjAlMjAlMjB2YXIlMjBDdXN0b21BbGVydCUyMCUzRCUyMCU3QiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGdldCUyMGJhY2tkcm9wJTI4JTI5JTIwJTdCJTIwcmV0dXJuJTIwZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQlMjglMjdjdXN0b20tbW9kYWwtYmFja2Ryb3AlMjclMjklM0IlMjAlN0QlMkMlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBnZXQlMjB0aXRsZUVsJTI4JTI5JTIwJTdCJTIwcmV0dXJuJTIwZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQlMjglMjdtb2RhbC10aXRsZSUyNyUyOSUzQiUyMCU3RCUyQyUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGdldCUyMG1zZ0VsJTI4JTI5JTIwJTdCJTIwcmV0dXJuJTIwZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQlMjglMjdtb2RhbC1tZXNzYWdlJTI3JTI5JTNCJTIwJTdEJTJDJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwZ2V0JTIwaWNvbkVsJTI4JTI5JTIwJTdCJTIwcmV0dXJuJTIwZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQlMjglMjdtb2RhbC1pY29uJTI3JTI5JTNCJTIwJTdEJTJDJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwZ2V0JTIwYWN0aW9uc0VsJTI4JTI5JTIwJTdCJTIwcmV0dXJuJTIwZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQlMjglMjdtb2RhbC1hY3Rpb25zJTI3JTI5JTNCJTIwJTdEJTJDJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwX3Jlc2V0JTI4JTI5JTIwJTdCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwaWYlMjAlMjh0aGlzLmljb25FbCUyOSUyMHRoaXMuaWNvbkVsLmNsYXNzTmFtZSUyMCUzRCUyMCUyN2N1c3RvbS1tb2RhbC1pY29uJTI3JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwaWYlMjAlMjh0aGlzLmFjdGlvbnNFbCUyOSUyMHRoaXMuYWN0aW9uc0VsLmlubmVySFRNTCUyMCUzRCUyMCUyNyUyNyUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGlmJTIwJTI4dGhpcy50aXRsZUVsJTI5JTIwdGhpcy50aXRsZUVsLmlubmVyVGV4dCUyMCUzRCUyMCUyNyUyNyUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGlmJTIwJTI4dGhpcy5tc2dFbCUyOSUyMHRoaXMubXNnRWwuaW5uZXJUZXh0JTIwJTNEJTIwJTI3JTI3JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTdEJTJDJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwY2xvc2UlMjglMjklMjAlN0IlMjBpZiUyMCUyOHRoaXMuYmFja2Ryb3AlMjklMjB0aGlzLmJhY2tkcm9wLmNsYXNzTGlzdC5yZW1vdmUlMjglMjdhY3RpdmUlMjclMjklM0IlMjAlN0QlMkMlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBzaG93JTI4dGl0bGUlMkMlMjBtZXNzYWdlJTJDJTIwdHlwZSUyMCUzRCUyMCUyN2luZm8lMjclMjklMjAlN0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjByZXR1cm4lMjBuZXclMjBQcm9taXNlJTI4JTI4cmVzb2x2ZSUyOSUyMCUzRCUzRSUyMCU3QiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMHRoaXMuX3Jlc2V0JTI4JTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwaWYlMjAlMjglMjF0aGlzLmJhY2tkcm9wJTI5JTIwcmV0dXJuJTIwcmVzb2x2ZSUyOHRydWUlMjklM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBpZiUyMCUyOHRoaXMuaWNvbkVsJTI5JTIwJTdCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwdGhpcy5pY29uRWwuY2xhc3NMaXN0LmFkZCUyOHR5cGUlMjklM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBsZXQlMjBpQ2xhc3MlMjAlM0QlMjAlMjdmYS1pbmZvJTI3JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwaWYlMjAlMjh0eXBlJTIwJTNEJTNEJTNEJTIwJTI3c3VjY2VzcyUyNyUyOSUyMGlDbGFzcyUyMCUzRCUyMCUyN2ZhLWNoZWNrJTI3JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwaWYlMjAlMjh0eXBlJTIwJTNEJTNEJTNEJTIwJTI3ZXJyb3IlMjclMjklMjBpQ2xhc3MlMjAlM0QlMjAlMjdmYS10aW1lcyUyNyUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGlmJTIwJTI4dHlwZSUyMCUzRCUzRCUzRCUyMCUyN3dhcm5pbmclMjclMjklMjBpQ2xhc3MlMjAlM0QlMjAlMjdmYS1leGNsYW1hdGlvbiUyNyUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMHRoaXMuaWNvbkVsLmlubmVySFRNTCUyMCUzRCUyMCU2MCUzQ2klMjBjbGFzcyUzRCUyMmZhcyUyMCUyNCU3QmlDbGFzcyU3RCUyMiUzRSUzQy9pJTNFJTYwJTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTdEJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwaWYlMjAlMjh0aGlzLnRpdGxlRWwlMjklMjB0aGlzLnRpdGxlRWwuaW5uZXJUZXh0JTIwJTNEJTIwdGl0bGUlM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBpZiUyMCUyOHRoaXMubXNnRWwlMjklMjB0aGlzLm1zZ0VsLmlubmVyVGV4dCUyMCUzRCUyMG1lc3NhZ2UlM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBjb25zdCUyMGJ0biUyMCUzRCUyMGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQlMjglMjdidXR0b24lMjclMjklM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBidG4uY2xhc3NOYW1lJTIwJTNEJTIwJTYwbW9kYWwtYnRuJTIwcHJpbWFyeSU2MCUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGlmJTIwJTI4dHlwZSUyMCUzRCUzRCUzRCUyMCUyN2Vycm9yJTI3JTI5JTIwYnRuLmNsYXNzTmFtZSUyMCUzRCUyMCU2MG1vZGFsLWJ0biUyMGRhbmdlciU2MCUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGJ0bi5pbm5lclRleHQlMjAlM0QlMjAlMjdPSyUyNyUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGJ0bi5vbmNsaWNrJTIwJTNEJTIwJTI4JTI5JTIwJTNEJTNFJTIwJTdCJTIwdGhpcy5jbG9zZSUyOCUyOSUzQiUyMHJlc29sdmUlMjh0cnVlJTI5JTNCJTIwJTdEJTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwaWYlMjAlMjh0aGlzLmFjdGlvbnNFbCUyOSUyMHRoaXMuYWN0aW9uc0VsLmFwcGVuZENoaWxkJTI4YnRuJTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwdGhpcy5iYWNrZHJvcC5jbGFzc0xpc3QuYWRkJTI4JTI3YWN0aXZlJTI3JTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTdEJTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTdEJTBBJTIwJTIwJTIwJTIwJTdEJTNCJTBBJTIwJTIwJTIwJTIwZnVuY3Rpb24lMjBzaG93VG9hc3QlMjhtc2clMkMlMjB0eXBlJTIwJTNEJTIwJTI3c3VjY2VzcyUyNyUyOSUyMCU3QiUyMEN1c3RvbVRvYXN0LnNob3clMjhtc2clMkMlMjB0eXBlJTI5JTNCJTIwJTdE')));
+//]]>
+</script>
+<script>
+//<![CDATA[
+eval(decodeURIComponent(window.atob('Y29uc3QlMjBHQVNfQVBQX1VSTCUyMCUzRCUyMCUyMmh0dHBzJTNBLy9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J3ZnJ2TUhvYmNxRUxKa25aelVCdXRhUENaaG5XUVFiTnlZbGRDX1VJSGN3UUV6Z0xwbGNyaGF6OGxia0FwSHl2QUIvZXhlYyUyMiUzQiUwQSUyMCUyMCUyMCUyMGlmJTIwJTI4dHlwZW9mJTIwZ29vZ2xlJTIwJTNEJTNEJTNEJTIwJTI3dW5kZWZpbmVkJTI3JTI5JTIwJTdCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwd2luZG93Lmdvb2dsZSUyMCUzRCUyMCU3QiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMHNjcmlwdCUzQSUyMCU3QiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMHJ1biUzQSUyMG5ldyUyMFByb3h5JTI4JTdCJTdEJTJDJTIwJTdCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwZ2V0JTNBJTIwZnVuY3Rpb24lMjh0YXJnZXQlMkMlMjBwcm9wJTJDJTIwcmVjZWl2ZXIlMjklMjAlN0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBpZiUyMCUyOHByb3AlMjAlM0QlM0QlM0QlMjAlMjd3aXRoU3VjY2Vzc0hhbmRsZXIlMjclMjklMjByZXR1cm4lMjBmdW5jdGlvbiUyOGNiJTI5JTIwJTdCJTIwdGFyZ2V0Lm9uU3VjY2VzcyUyMCUzRCUyMGNiJTNCJTIwcmV0dXJuJTIwcmVjZWl2ZXIlM0IlMjAlN0QlM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBpZiUyMCUyOHByb3AlMjAlM0QlM0QlM0QlMjAlMjd3aXRoRmFpbHVyZUhhbmRsZXIlMjclMjklMjByZXR1cm4lMjBmdW5jdGlvbiUyOGNiJTI5JTIwJTdCJTIwdGFyZ2V0Lm9uRmFpbHVyZSUyMCUzRCUyMGNiJTNCJTIwcmV0dXJuJTIwcmVjZWl2ZXIlM0IlMjAlN0QlM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjByZXR1cm4lMjBmdW5jdGlvbiUyOC4uLmFyZ3MlMjklMjAlN0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBjb25zdCUyMHBheWxvYWQlMjAlM0QlMjAlN0IlMjBhY3Rpb24lM0ElMjBwcm9wJTJDJTIwcGFyYW1ldGVycyUzQSUyMGFyZ3MlMjAlN0QlM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBmZXRjaCUyOEdBU19BUFBfVVJMJTJDJTIwJTdCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwbWV0aG9kJTNBJTIwJTI3UE9TVCUyNyUyQyUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMG1vZGUlM0ElMjAlMjdjb3JzJTI3JTJDJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwcmVkaXJlY3QlM0ElMjAlMjdmb2xsb3clMjclMkMlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBoZWFkZXJzJTNBJTIwJTdCJTIwJTI3Q29udGVudC1UeXBlJTI3JTNBJTIwJTI3dGV4dC9wbGFpbiUzQmNoYXJzZXQlM0R1dGYtOCUyNyUyMCU3RCUyQyUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGJvZHklM0ElMjBKU09OLnN0cmluZ2lmeSUyOHBheWxvYWQlMjklMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlN0QlMjklMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAudGhlbiUyOHIlMjAlM0QlM0UlMjByLmpzb24lMjglMjklMjklMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAudGhlbiUyOHJlcyUyMCUzRCUzRSUyMCU3QiUyMGlmJTIwJTI4dGFyZ2V0Lm9uU3VjY2VzcyUyOSUyMHRhcmdldC5vblN1Y2Nlc3MlMjhyZXMlMjklM0IlMjAlN0QlMjklMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAuY2F0Y2glMjhlcnIlMjAlM0QlM0UlMjAlN0IlMjBpZiUyMCUyOHRhcmdldC5vbkZhaWx1cmUlMjklMjB0YXJnZXQub25GYWlsdXJlJTI4ZXJyJTI5JTNCJTIwJTdEJTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTdEJTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTdEJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTdEJTI5JTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTdEJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTdEJTNCJTBBJTIwJTIwJTIwJTIwJTdE')));
+//]]>
+</script>
+
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a onclick="navigateTo('home')" class="logo">
+                <div class="logo-icon"><i class="fas fa-link"></i></div> Kliqify
+            </a>
+            <div class="nav-links" id="navLinks">
+                <a onclick="navigateTo('home', 'features'); toggleMobileMenu();" class="nav-link">Fitur</a>
+                <a onclick="navigateTo('home', 'how-it-works'); toggleMobileMenu();" class="nav-link">Cara Kerja</a>
+                <a onclick="navigateTo('home', 'earnings'); toggleMobileMenu();" class="nav-link">Penghasilan</a>
+                <!-- Guest only -->
+                <a href="https://dashboard.kliqify.my.id/user-kliqify?page=register" class="nav-link nav-guest-only">Daftar</a>
+                <a href="https://dashboard.kliqify.my.id/user-kliqify?page=login" class="btn btn-primary nav-guest-only"><i
+                        class="fas fa-arrow-right"></i> Mulai</a>
+                <!-- Logged-in only -->
+                <a href="https://dashboard.kliqify.my.id/user-kliqify?page=dashboard" class="nav-user-btn nav-loggedin-only" id="navUserBtn"
+                    style="display:none;">
+                    <i class="fas fa-user-circle"></i> <span id="navUserName">User</span>
+                </a>
+            </div>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+                <span class="hamburger-dot" id="hamburgerDot"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- CONTENT VIEWS -->
+
+    <!-- 1. HOME VIEW -->
+    <div id="home-view" class="page-view active">
+        <!-- Hero -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="section-label"><i class="fas fa-fire"></i> Platform Shortlink #1 Indonesia</div>
+                    <h1>Ubah Setiap Link Menjadi <span>Penghasilan</span></h1>
+                    <p>Pendekkan link, bagikan ke audiens Anda, dan dapatkan bayaran untuk setiap klik. Dipercaya ribuan
+                        kreator konten dan pemasar digital.</p>
+                    <div class="hero-buttons">
+                        <a href="https://dashboard.kliqify.my.id/user-kliqify?page=login" class="btn btn-primary"><i class="fas fa-rocket"></i>
+                            Mulai</a>
+                        <a onclick="navigateTo('home', 'how-it-works')" class="btn btn-outline"><i
+                                class="fas fa-play-circle"></i> Cara Kerja</a>
+                    </div>
+                    <div class="hero-trust">
+                        <div class="avatars">
+                            <span style="background:linear-gradient(135deg,#f59e0b,#ef4444)">R</span>
+                            <span style="background:linear-gradient(135deg,#3b82f6,#8b5cf6)">A</span>
+                            <span style="background:linear-gradient(135deg,#10b981,#06b6d4)">D</span>
+                            <span style="background:linear-gradient(135deg,#ec4899,#f43f5e)">S</span>
+                        </div>
+                        <div>
+                            <div class="rating">★★★★★</div>
+                            <div>10.000+ pengguna aktif</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <!-- Floating Badge 1 - Earnings -->
+                    <div class="floating-badge b1">
+                        <div class="badge-icon" style="background:linear-gradient(135deg,#059669,#10b981);color:#fff"><i
+                                class="fas fa-arrow-trend-up"></i></div>
+                        <div>
+                            <div class="badge-text">+Rp 125.000</div>
+                            <div class="badge-sub">Penghasilan hari ini</div>
+                        </div>
+                    </div>
+                    <!-- Floating Badge 2 - Live views -->
+                    <div class="floating-badge b2">
+                        <div class="badge-icon" style="background:linear-gradient(135deg,#3b82f6,#6366f1);color:#fff"><i
+                                class="fas fa-satellite-dish"></i></div>
+                        <div>
+                            <div class="badge-text" id="liveViewCount">3.241 views</div>
+                            <div class="badge-sub"><span style="color:#10b981">●</span> Live sekarang</div>
+                        </div>
+                    </div>
+                    <!-- Main dashboard card -->
+                    <div class="dashboard-preview">
+                        <!-- Browser chrome header -->
+                        <div class="preview-header">
+                            <div class="dot" style="background:#ef4444"></div>
+                            <div class="dot" style="background:#f59e0b"></div>
+                            <div class="dot" style="background:#10b981"></div>
+                            <div class="preview-url-bar">
+                                <i class="fas fa-lock" style="color:#10b981;font-size:9px"></i>
+                                <span>dashboard.kliqify.my.id</span>
+                            </div>
+                        </div>
+                        <!-- Stats row -->
+                        <div class="preview-stats">
+                            <div class="preview-stat">
+                                <div class="stat-icon-wrap" style="background:rgba(16,185,129,.12);color:#10b981"><i
+                                        class="fas fa-wallet"></i></div>
+                                <div class="label">Saldo</div>
+                                <div class="val green">Rp <span id="heroBalance">847.500</span></div>
+                                <div class="stat-badge-up"><i class="fas fa-arrow-up"></i> +12% minggu ini</div>
+                            </div>
+                            <div class="preview-stat">
+                                <div class="stat-icon-wrap" style="background:rgba(59,130,246,.12);color:#3b82f6"><i
+                                        class="fas fa-eye"></i></div>
+                                <div class="label">Total Views</div>
+                                <div class="val" style="color:#fff">52.481</div>
+                                <div class="stat-badge-up"><i class="fas fa-arrow-up"></i> +8,3% bulan ini</div>
+                            </div>
+                        </div>
+                        <!-- Mini Chart -->
+                        <div class="preview-chart-label">Pendapatan 7 hari terakhir</div>
+                        <div class="preview-chart">
+                            <svg viewBox="0 0 340 80" preserveAspectRatio="none">
+                                <defs>
+                                    <linearGradient id="heroChartGrad" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#10b981" stop-opacity="0.4" />
+                                        <stop offset="100%" stop-color="#10b981" stop-opacity="0" />
+                                    </linearGradient>
+                                </defs>
+                                <path
+                                    d="M0,60 C30,55 50,45 80,35 C110,25 130,50 160,30 C190,10 210,20 240,15 C270,10 290,5 340,8"
+                                    fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" />
+                                <path
+                                    d="M0,60 C30,55 50,45 80,35 C110,25 130,50 160,30 C190,10 210,20 240,15 C270,10 290,5 340,8 L340,80 L0,80 Z"
+                                    fill="url(#heroChartGrad)" />
+                                <!-- Data points -->
+                                <circle cx="80" cy="35" r="3" fill="#10b981" />
+                                <circle cx="160" cy="30" r="3" fill="#10b981" />
+                                <circle cx="240" cy="15" r="3" fill="#10b981" />
+                                <circle cx="340" cy="8" r="4" fill="#fff" stroke="#10b981" stroke-width="2" />
+                            </svg>
+                        </div>
+                        <!-- Active links row -->
+                        <div class="preview-links">
+                            <div class="preview-link-item">
+                                <div class="link-dot" style="background:#10b981"></div>
+                                <div class="link-info">
+                                    <div class="link-name">kliq.my.id/tech24</div>
+                                    <div class="link-views">1.832 views</div>
+                                </div>
+                                <div class="link-earn">Rp 36.640</div>
+                            </div>
+                            <div class="preview-link-item">
+                                <div class="link-dot" style="background:#3b82f6"></div>
+                                <div class="link-info">
+                                    <div class="link-name">kliq.my.id/promo9</div>
+                                    <div class="link-views">982 views</div>
+                                </div>
+                                <div class="link-earn">Rp 19.640</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Glow effect behind card -->
+                    <div class="hero-glow"></div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Features -->
+        <section class="features" id="features">
+            <div class="container">
+                <div class="section-title">
+                    <div class="section-label"><i class="fas fa-star"></i> Fitur Unggulan</div>
+                    <h2>Semua yang Anda Butuhkan untuk Monetisasi</h2>
+                    <p>Tools lengkap untuk memaksimalkan pendapatan dari setiap link yang Anda bagikan.</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background:#ecfdf5;color:#10b981"><i class="fas fa-link"></i>
+                        </div>
+                        <h3>Smart Shortlink</h3>
+                        <p>Pendekkan URL panjang menjadi link pendek yang mudah diingat dan dilacak secara real-time.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background:#dbeafe;color:#3b82f6"><i
+                                class="fas fa-chart-line"></i></div>
+                        <h3>Analitik Real-Time</h3>
+                        <p>Pantau views, klik, dan pendapatan Anda secara langsung dengan dashboard interaktif.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background:#fef3c7;color:#f59e0b"><i class="fas fa-coins"></i>
+                        </div>
+                        <h3>CPM Tinggi</h3>
+                        <p>Rate CPM kompetitif untuk semua traffic. Semakin banyak views, semakin besar penghasilan
+                            Anda.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section class="steps" id="how-it-works">
+            <div class="container">
+                <div class="section-title">
+                    <div class="section-label"><i class="fas fa-wand-magic-sparkles"></i> Cara Kerja</div>
+                    <h2>Mulai Hasilkan Uang dalam 4 Langkah</h2>
+                    <p>Prosesnya super simpel. Tidak perlu skill khusus atau modal apapun.</p>
+                </div>
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-num">1</div>
+                        <h3>Mulai Gratis</h3>
+                        <p>Buat akun dalam 30 detik tanpa biaya apapun</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-num">2</div>
+                        <h3>Buat Shortlink</h3>
+                        <p>Pendekkan URL apapun menjadi link Kliqify</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-num">3</div>
+                        <h3>Bagikan Link</h3>
+                        <p>Share ke media sosial, grup, atau blog Anda</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-num">4</div>
+                        <h3>Tarik Dana</h3>
+                        <p>Cairkan penghasilan ke e-wallet favorit Anda</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Earnings -->
+        <section class="earnings" id="earnings">
+            <div class="container">
+                <div class="earnings-content">
+                    <div class="earnings-info">
+                        <div class="section-label"><i class="fas fa-money-bill-trend-up"></i> Penghasilan</div>
+                        <h2>Rate Pembayaran Kompetitif</h2>
+                        <p>Kami menawarkan rate CPM yang kompetitif untuk berbagai negara.</p>
+                        <div class="earnings-features">
+                            <div class="earn-feature"><i class="fas fa-check-circle"></i><span>Minimum pencairan hanya
+                                    Rp 10.000</span></div>
+                            <div class="earn-feature"><i class="fas fa-check-circle"></i><span>Support GoPay, DANA,
+                                    SeaBank, Bank Jago</span></div>
+                        </div>
+                    </div>
+                    <div class="rate-table">
+                        <h3><i class="fas fa-globe"></i> Rate CPM per Negara</h3>
+                        <div class="rate-row"><span class="country">🇮🇩 Indonesia</span><span class="rate">Rp 20.000 -
+                                40.000</span></div>
+                        <div class="rate-row"><span class="country">🇺🇸 United States</span><span class="rate">Rp
+                                80.000 - 120.000</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="cta">
+            <div class="container">
+                <div class="cta-box">
+                    <h2>Siap Menghasilkan dari Setiap Link?</h2>
+                    <p>Bergabung dengan ribuan kreator yang sudah menikmati penghasilan pasif dari Kliqify.</p>
+                    <a href="https://dashboard.kliqify.my.id/user-kliqify?page=login" class="btn btn-white"><i class="fas fa-rocket"></i> Mulai
+                        Sekarang</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 2. TERMS VIEW -->
+    <div id="terms-view" class="page-view">
+        <div class="page-header">
+            <div class="container">
+                <h1>Syarat &amp; Ketentuan</h1>
+                <p style="margin-top:10px;opacity:0.8">Terakhir diperbarui: 19 Februari 2026</p>
+            </div>
+        </div>
+        <div class="page-content">
+            <div class="container">
+                <div class="content-box">
+                    <p>Selamat datang di Kliqify. Dengan mengakses atau menggunakan platform kami, Anda setuju untuk
+                        terikat oleh Syarat dan Ketentuan berikut.</p>
+                    <h2>1. Definisi</h2>
+                    <p>"Platform" merujuk pada Kliqify. "Pengguna" atau "Anda" merujuk pada individu atau entitas yang
+                        menggunakan layanan kami.</p>
+                    <h2>2. Akun Pengguna</h2>
+                    <ul>
+                        <li>Anda harus berusia minimal 13 tahun untuk menggunakan layanan ini.</li>
+                        <li>Anda bertanggung jawab menjaga kerahasiaan informasi akun Anda.</li>
+                    </ul>
+                    <h2>3. Larangan Penggunaan</h2>
+                    <p>Anda dilarang menggunakan Kliqify untuk memendekkan tautan yang mengarah ke:</p>
+                    <ul>
+                        <li>Konten ilegal, pornografi, atau perjudian.</li>
+                        <li>Situs yang mengandung malware, virus, atau phising.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. PRIVACY VIEW -->
+    <div id="privacy-view" class="page-view">
+        <div class="page-header">
+            <div class="container">
+                <h1>Kebijakan Privasi</h1>
+                <p style="margin-top:10px;opacity:0.8">Terakhir diperbarui: 19 Februari 2026</p>
+            </div>
+        </div>
+        <div class="page-content">
+            <div class="container">
+                <div class="content-box">
+                    <p>Di Kliqify, kami menghargai privasi Anda.</p>
+                    <h2>1. Informasi yang Kami Kumpulkan</h2>
+                    <ul>
+                        <li>Informasi pribadi yang Anda berikan saat mendaftar (nama, email, password).</li>
+                        <li>Informasi teknis (alamat IP, jenis perangkat) saat Anda mengakses layanan kami.</li>
+                    </ul>
+                    <h2>2. Penggunaan Informasi</h2>
+                    <p>Kami menggunakan data untuk menyediakan layanan pemendekan tautan, memproses pembayaran, dan
+                        mencegah penipuan.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. FAQ VIEW -->
+    <div id="faq-view" class="page-view">
+        <div class="page-header">
+            <div class="container">
+                <h1>Pertanyaan Umum (FAQ)</h1>
+            </div>
+        </div>
+        <div class="page-content">
+            <div class="container">
+                <div class="content-box">
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Bagaimana cara kerja Kliqify?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="accordion-body">
+                            Kliqify bekerja dengan memendekkan URL panjang Anda. Saat seseorang mengklik link pendek
+                            tersebut, mereka akan melihat iklan singkat sebelum diarahkan ke tujuan asli.
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Berapa minimum penarikan dana?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="accordion-body">
+                            Minimum penarikan adalah Rp 10.000.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. HELP VIEW -->
+    <div id="help-view" class="page-view">
+        <div class="page-header">
+            <div class="container">
+                <h1>Pusat Bantuan</h1>
+            </div>
+        </div>
+        <div class="page-content">
+            <div class="container">
+                <div class="content-box">
+                    <p>Tim support kami siap membantu Anda.</p>
+                    <div class="contact-card">
+                        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                        <h3>Email Support</h3>
+                        <p>Kirimkan pertanyaan Anda melalui email.</p>
+                        <a href="mailto:cokroaksata@gmail.com" class="btn btn-primary"
+                            style="width:100%;justify-content:center"><i class="fas fa-paper-plane"></i> Hubungi
+                            Kami</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo" style="color:#fff" onclick="navigateTo('home')">
+                        <div class="logo-icon"><i class="fas fa-link"></i></div> Kliqify
+                    </div>
+                    <p>Platform shortlink monetisasi #1 di Indonesia.</p>
+                    <div class="footer-social">
+                        <a href="https://instagram.com/kliqify.id" target="_blank"><i class="fab fa-instagram"></i>
+                            @kliqify.id</a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Platform</h4>
+                    <ul>
+                        <li><a onclick="navigateTo('home')">Beranda</a></li>
+                        <li><a onclick="navigateTo('home', 'features')">Fitur</a></li>
+                        <li><a onclick="navigateTo('home', 'earnings')">Rate CPM</a></li>
+                        <li><a href="https://dashboard.kliqify.my.id/user-kliqify?page=login">Mulai</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Bantuan</h4>
+                    <ul>
+                        <li><a onclick="navigateTo('help')">Pusat Bantuan</a></li>
+                        <li><a onclick="navigateTo('faq')">FAQ</a></li>
+                        <li><a href="mailto:cokroaksata@gmail.com">Hubungi Kami</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a onclick="navigateTo('terms')">Syarat &amp; Ketentuan</a></li>
+                        <li><a onclick="navigateTo('privacy')">Kebijakan Privasi</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">&#169; 2026 Kliqify. Hak cipta dilindungi undang-undang.</div>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            <div class="modal-icon"><i class="fas fa-rocket"></i></div>
+            <h3 style="margin-bottom:10px;font-size:22px;color:var(--secondary)">Segera Hadir!</h3>
+            <p style="color:var(--text-light);font-size:15px">Fitur ini sedang dalam pengembangan.</p>
+            <button class="btn btn-primary" onclick="closeModal()" style="margin-top:20px;width:100%">Oke!</button>
+        </div>
+    </div>
+
+    <script>
+//<![CDATA[
+eval(decodeURIComponent(window.atob('ZnVuY3Rpb24lMjBuYXZpZ2F0ZVRvJTI4dmlld0lkJTJDJTIwc2VjdGlvbklkJTIwJTNEJTIwbnVsbCUyOSUyMCU3QiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMC8vJTIwSGlkZSUyMGFsbCUyMHZpZXdzJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwZG9jdW1lbnQucXVlcnlTZWxlY3RvckFsbCUyOCUyNy5wYWdlLXZpZXclMjclMjkuZm9yRWFjaCUyOGVsJTIwJTNEJTNFJTIwZWwuY2xhc3NMaXN0LnJlbW92ZSUyOCUyN2FjdGl2ZSUyNyUyOSUyOSUzQiUwQSUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMC8vJTIwU2hvdyUyMHRhcmdldCUyMHZpZXclMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBjb25zdCUyMHRhcmdldCUyMCUzRCUyMGRvY3VtZW50LmdldEVsZW1lbnRCeUlkJTI4dmlld0lkJTIwJTJCJTIwJTI3LXZpZXclMjclMjklM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBpZiUyMCUyOHRhcmdldCUyOSUyMCU3QiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMHRhcmdldC5jbGFzc0xpc3QuYWRkJTI4JTI3YWN0aXZlJTI3JTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwd2luZG93LnNjcm9sbFRvJTI4JTdCJTIwdG9wJTNBJTIwMCUyQyUyMGJlaGF2aW9yJTNBJTIwJTI3c21vb3RoJTI3JTIwJTdEJTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTdEJTBBJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwLy8lMjBVcGRhdGUlMjBVUkwlMjBoYXNoJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwaWYlMjAlMjh2aWV3SWQlMjAlM0QlM0QlM0QlMjAlMjdob21lJTI3JTIwJTI2JTI2JTIwJTIxc2VjdGlvbklkJTI5JTIwJTdCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwaGlzdG9yeS5wdXNoU3RhdGUlMjhudWxsJTJDJTIwbnVsbCUyQyUyMCUyNyUyMCUyNyUyOSUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCU3RCUyMGVsc2UlMjBpZiUyMCUyOHZpZXdJZCUyMCUyMSUzRCUzRCUyMCUyN2hvbWUlMjclMjklMjAlN0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBoaXN0b3J5LnB1c2hTdGF0ZSUyOG51bGwlMkMlMjBudWxsJTJDJTIwJTI3JTIzJTI3JTIwJTJCJTIwdmlld0lkJTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTdEJTBBJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwLy8lMjBTY3JvbGwlMjB0byUyMHNlY3Rpb24lMjBpZiUyMHByb3ZpZGVkJTIwJTI4ZS5nLiUyMGZlYXR1cmVzJTI5JTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwaWYlMjAlMjhzZWN0aW9uSWQlMjklMjAlN0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBzZXRUaW1lb3V0JTI4JTI4JTI5JTIwJTNEJTNFJTIwJTdCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwY29uc3QlMjBzZWN0aW9uJTIwJTNEJTIwZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQlMjhzZWN0aW9uSWQlMjklM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBpZiUyMCUyOHNlY3Rpb24lMjklMjBzZWN0aW9uLnNjcm9sbEludG9WaWV3JTI4JTdCJTIwYmVoYXZpb3IlM0ElMjAlMjdzbW9vdGglMjclMjAlN0QlMjklM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlN0QlMkMlMjAxMDAlMjklM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlN0QlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlN0QlMEElMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAvLyUyMEhhbmRsZSUyMGluaXRpYWwlMjByb3V0aW5nJTIwJTI4SGFzaCUyME9SJTIwUXVlcnklMjBQYXJhbSUyOSUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMHdpbmRvdy5hZGRFdmVudExpc3RlbmVyJTI4JTI3bG9hZCUyNyUyQyUyMCUyOCUyOSUyMCUzRCUzRSUyMCU3QiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGxldCUyMHRhcmdldFZpZXclMjAlM0QlMjB3aW5kb3cubG9jYXRpb24uaGFzaC5zdWJzdHJpbmclMjgxJTI5JTNCJTBBJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwLy8lMjBGYWxsYmFjayUyMHRvJTIwcXVlcnklMjBwYXJhbSUyMGlmJTIwbm8lMjBoYXNoJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwaWYlMjAlMjglMjF0YXJnZXRWaWV3JTI5JTIwJTdCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwY29uc3QlMjB1cmxQYXJhbXMlMjAlM0QlMjBuZXclMjBVUkxTZWFyY2hQYXJhbXMlMjh3aW5kb3cubG9jYXRpb24uc2VhcmNoJTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwdGFyZ2V0VmlldyUyMCUzRCUyMHVybFBhcmFtcy5nZXQlMjglMjdwYWdlJTI3JTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTdEJTBBJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwaWYlMjAlMjh0YXJnZXRWaWV3JTIwJTI2JTI2JTIwJTVCJTI3dGVybXMlMjclMkMlMjAlMjdwcml2YWN5JTI3JTJDJTIwJTI3ZmFxJTI3JTJDJTIwJTI3aGVscCUyNyU1RC5pbmNsdWRlcyUyOHRhcmdldFZpZXclMjklMjklMjAlN0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBuYXZpZ2F0ZVRvJTI4dGFyZ2V0VmlldyUyOSUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCU3RCUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCU3RCUyOSUzQiUwQSUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGZ1bmN0aW9uJTIwdG9nZ2xlQWNjb3JkaW9uJTI4aGVhZGVyJTI5JTIwJTdCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwY29uc3QlMjBpdGVtJTIwJTNEJTIwaGVhZGVyLnBhcmVudEVsZW1lbnQlM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBpdGVtLmNsYXNzTGlzdC50b2dnbGUlMjglMjdhY3RpdmUlMjclMjklM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlN0QlMEElMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBmdW5jdGlvbiUyMHNob3dDb21pbmdTb29uJTI4JTI5JTIwJTdCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwaWYlMjAlMjh0eXBlb2YlMjBDdXN0b21BbGVydCUyMCUyMSUzRCUzRCUyMCUyN3VuZGVmaW5lZCUyNyUyOSUyMCU3QiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMEN1c3RvbUFsZXJ0LnNob3clMjglMjdTZWdlcmElMjBIYWRpciUyMSUyNyUyQyUyMCUyN0ZpdHVyJTIwaW5pJTIwc2VkYW5nJTIwZGFsYW0lMjBwZW5nZW1iYW5nYW4uJTI3JTJDJTIwJTI3aW5mbyUyNyUyOSUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCU3RCUyMGVsc2UlMjAlN0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBjb25zdCUyMG1vZGFsJTIwJTNEJTIwZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQlMjglMjdtb2RhbE92ZXJsYXklMjclMjklM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBpZiUyMCUyOG1vZGFsJTI5JTIwbW9kYWwuY2xhc3NMaXN0LmFkZCUyOCUyN2FjdGl2ZSUyNyUyOSUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCU3RCUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCU3RCUwQSUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGZ1bmN0aW9uJTIwY2xvc2VNb2RhbCUyOCUyOSUyMCU3QiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGRvY3VtZW50LmdldEVsZW1lbnRCeUlkJTI4JTI3bW9kYWxPdmVybGF5JTI3JTI5LmNsYXNzTGlzdC5yZW1vdmUlMjglMjdhY3RpdmUlMjclMjklM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlN0QlMEElMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCUyOCUyN21vZGFsT3ZlcmxheSUyNyUyOS5hZGRFdmVudExpc3RlbmVyJTI4JTI3Y2xpY2slMjclMkMlMjBmdW5jdGlvbiUyMCUyOGUlMjklMjAlN0IlMjBpZiUyMCUyOGUudGFyZ2V0JTIwJTNEJTNEJTNEJTIwdGhpcyUyOSUyMGNsb3NlTW9kYWwlMjglMjklMjAlN0QlMjklM0IlMEElMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAvLyUyME5hdmJhciUyMHNjcm9sbCUyMGVmZmVjdCUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMHdpbmRvdy5hZGRFdmVudExpc3RlbmVyJTI4JTI3c2Nyb2xsJTI3JTJDJTIwZnVuY3Rpb24lMjAlMjglMjklMjAlN0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBjb25zdCUyMG5hdiUyMCUzRCUyMGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IlMjglMjcubmF2YmFyJTI3JTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwaWYlMjAlMjhuYXYlMjklMjBuYXYuc3R5bGUuYm94U2hhZG93JTIwJTNEJTIwd2luZG93LnNjcm9sbFklMjAlM0UlMjA1MCUyMCUzRiUyMCUyNzAlMjA0cHglMjAyMHB4JTIwcmdiYSUyODAlMkMwJTJDMCUyQy4wOCUyOSUyNyUyMCUzQSUyMCUyN25vbmUlMjclM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlN0QlMjklM0IlMEElMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAvLyUyMC0tLSUyMEhFUk8lM0ElMjBMaXZlJTIwVmlldyUyMENvdW50ZXIlMjBBbmltYXRpb24lMjAtLS0lMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjhmdW5jdGlvbiUyMCUyOCUyOSUyMCU3QiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGNvbnN0JTIwbGl2ZUVsJTIwJTNEJTIwZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQlMjglMjdsaXZlVmlld0NvdW50JTI3JTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwaWYlMjAlMjglMjFsaXZlRWwlMjklMjByZXR1cm4lM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBsZXQlMjBiYXNlJTIwJTNEJTIwMzI0MSUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMHNldEludGVydmFsJTI4JTI4JTI5JTIwJTNEJTNFJTIwJTdCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwY29uc3QlMjBkZWx0YSUyMCUzRCUyME1hdGguZmxvb3IlMjhNYXRoLnJhbmRvbSUyOCUyOSUyMCUyQSUyMDclMjklMjAtJTIwMiUzQiUyMC8vJTIwLTIlMjB0byUyMCUyQjQlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBiYXNlJTIwJTNEJTIwTWF0aC5tYXglMjgzMTAwJTJDJTIwYmFzZSUyMCUyQiUyMGRlbHRhJTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwbGl2ZUVsLnRleHRDb250ZW50JTIwJTNEJTIwYmFzZS50b0xvY2FsZVN0cmluZyUyOCUyN2lkLUlEJTI3JTI5JTIwJTJCJTIwJTI3JTIwdmlld3MlMjclM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlN0QlMkMlMjAzMDAwJTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTdEJTI5JTI4JTI5JTNCJTBBJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwLy8lMjAtLS0lMjBOYXZiYXIlMjBBdXRoJTIwU3RhdGUlMjBEZXRlY3Rpb24lMjAtLS0lMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjhmdW5jdGlvbiUyMGluaXROYXZiYXJBdXRoJTI4JTI5JTIwJTdCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwLy8lMjBDcm9zcy1kb21haW4lMjBzeW5jJTNBJTIwZGFzaGJvYXJkJTIwcmVkaXJlY3RzJTIwaGVyZSUyMHdpdGglMjAlM0ZhY3Rpb24lM0Rsb2dpbiUyMG9yJTIwJTNGYWN0aW9uJTNEbG9nb3V0JTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwY29uc3QlMjB1cmxQYXJhbXMlMjAlM0QlMjBuZXclMjBVUkxTZWFyY2hQYXJhbXMlMjh3aW5kb3cubG9jYXRpb24uc2VhcmNoJTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwY29uc3QlMjBhY3Rpb24lMjAlM0QlMjB1cmxQYXJhbXMuZ2V0JTI4JTI3YWN0aW9uJTI3JTI5JTNCJTBBJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwaWYlMjAlMjhhY3Rpb24lMjAlM0QlM0QlM0QlMjAlMjdsb2dvdXQlMjclMjklMjAlN0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBsb2NhbFN0b3JhZ2UucmVtb3ZlSXRlbSUyOCUyN2tsaXFpZnlfdXNlcm5hbWUlMjclMjklM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBsb2NhbFN0b3JhZ2UucmVtb3ZlSXRlbSUyOCUyN2tsaXFpZnlfcGFzc3dvcmQlMjclMjklM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBsb2NhbFN0b3JhZ2UucmVtb3ZlSXRlbSUyOCUyN2tsaXFpZnlfbmFtYSUyNyUyOSUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGxvY2FsU3RvcmFnZS5yZW1vdmVJdGVtJTI4JTI3a2xpcWlmeV9yb2xlJTI3JTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwbG9jYWxTdG9yYWdlLnJlbW92ZUl0ZW0lMjglMjdrbGlxaWZ5X3N0YXR1cyUyNyUyOSUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMC8vJTIwUmVkaXJlY3QlMjB0byUyMGNsZWFuJTIwbGFuZGluZyUyMHBhZ2UlMjBVUkwlMjAlMjhyZW1vdmUlMjBxdWVyeSUyMHBhcmFtcyUyOSUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMHdpbmRvdy5sb2NhdGlvbi5ocmVmJTIwJTNEJTIwd2luZG93LmxvY2F0aW9uLm9yaWdpbiUyMCUyQiUyMHdpbmRvdy5sb2NhdGlvbi5wYXRobmFtZSUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMHJldHVybiUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCU3RCUyMGVsc2UlMjBpZiUyMCUyOGFjdGlvbiUyMCUzRCUzRCUzRCUyMCUyN2xvZ2luJTI3JTI5JTIwJTdCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwY29uc3QlMjBzeW5jVXNlciUyMCUzRCUyMHVybFBhcmFtcy5nZXQlMjglMjd1c2VyJTI3JTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwY29uc3QlMjByZWRpcmVjdFRvJTIwJTNEJTIwdXJsUGFyYW1zLmdldCUyOCUyN3JlZGlyZWN0JTI3JTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwaWYlMjAlMjhzeW5jVXNlciUyOSUyMCU3QiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGxvY2FsU3RvcmFnZS5zZXRJdGVtJTI4JTI3a2xpcWlmeV91c2VybmFtZSUyNyUyQyUyMHN5bmNVc2VyJTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwLy8lMjBNaW5pbWFsJTIwc3luYyUyQyUyMG90aGVycyUyMGNhbiUyMGJlJTIwbWlzc2luZyUyMG9yJTIwc3luY2VkJTIwc2ltaWxhcmx5JTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTdEJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwLy8lMjBSZWRpcmVjdCUyMGJhY2slMjB0byUyMGRhc2hib2FyZCUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGlmJTIwJTI4cmVkaXJlY3RUbyUyOSUyMCU3QiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMHdpbmRvdy5sb2NhdGlvbi5ocmVmJTIwJTNEJTIwcmVkaXJlY3RUbyUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMHJldHVybiUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCU3RCUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCU3RCUwQSUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGNvbnN0JTIwc2F2ZWRVc2VyJTIwJTNEJTIwbG9jYWxTdG9yYWdlLmdldEl0ZW0lMjglMjdrbGlxaWZ5X3VzZXJuYW1lJTI3JTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwaWYlMjAlMjhzYXZlZFVzZXIlMjklMjAlN0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAvLyUyMEhpZGUlMjBndWVzdCUyMGJ1dHRvbnMlMjAlMjhEYWZ0YXIlMjAlMkIlMjBNdWxhaSUyOSUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3JBbGwlMjglMjcubmF2LWd1ZXN0LW9ubHklMjclMjkuZm9yRWFjaCUyOGVsJTIwJTNEJTNFJTIwZWwuc3R5bGUuZGlzcGxheSUyMCUzRCUyMCUyN25vbmUlMjclMjklM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAvLyUyMFNob3clMjB1c2VyJTIwcHJvZmlsZSUyMGJ1dHRvbiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGNvbnN0JTIwdXNlckJ0biUyMCUzRCUyMGRvY3VtZW50LmdldEVsZW1lbnRCeUlkJTI4JTI3bmF2VXNlckJ0biUyNyUyOSUzQiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGlmJTIwJTI4dXNlckJ0biUyOSUyMCU3QiUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMHVzZXJCdG4uc3R5bGUuZGlzcGxheSUyMCUzRCUyMCUyN2lubGluZS1mbGV4JTI3JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQlMjglMjduYXZVc2VyTmFtZSUyNyUyOS5pbm5lclRleHQlMjAlM0QlMjBzYXZlZFVzZXIlM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlN0QlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAvLyUyMFNob3clMjByZWQlMjBkb3QlMjBvbiUyMGhhbWJ1cmdlciUyMCUyOG1vYmlsZSUyMGluZGljYXRvciUyOSUwQSUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMCUyMGNvbnN0JTIwZG90JTIwJTNEJTIwZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQlMjglMjdoYW1idXJnZXJEb3QlMjclMjklM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjBpZiUyMCUyOGRvdCUyOSUyMGRvdC5zdHlsZS5kaXNwbGF5JTIwJTNEJTIwJTI3YmxvY2slMjclM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlN0QlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlN0QlMjklMjglMjklM0I=')));
+//]]>
+</script>
+    <!-- Shared Components: Custom Alert, Confirm &amp; Toast -->
+    
+
+    <!-- HTML Structure -->
+    <div id="toast-container" class="song-toast-container"></div>
+
+    <div id="custom-modal-backdrop" class="custom-modal-backdrop">
+        <div class="custom-modal-box">
+            <div id="modal-icon" class="custom-modal-icon"><i class="fas fa-info"></i></div>
+            <h3 id="modal-title" class="custom-modal-title">Title</h3>
+            <p id="modal-message" class="custom-modal-message">Message goes here...</p>
+            <div id="modal-actions" class="custom-modal-actions">
+                <!-- Buttons injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+//<![CDATA[
+eval(decodeURIComponent(window.atob('Ly8lMjBNb2JpbGUlMjBNZW51JTIwVG9nZ2xlJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwZnVuY3Rpb24lMjB0b2dnbGVNb2JpbGVNZW51JTI4JTI5JTIwJTdCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwY29uc3QlMjBuYXYlMjAlM0QlMjBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCUyOCUyN25hdkxpbmtzJTI3JTI5JTNCJTBBJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwJTIwbmF2LmNsYXNzTGlzdC50b2dnbGUlMjglMjdhY3RpdmUlMjclMjklM0IlMEElMjAlMjAlMjAlMjAlMjAlMjAlMjAlMjAlN0Q=')));
+//]]>
+</script>
+
+      </b:includable>
+    </b:widget>
+  </b:section>
+</body>
+</html>
