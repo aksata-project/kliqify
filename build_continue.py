@@ -1,8 +1,21 @@
 import os
 import re
+import json
 
-# Web App URL
-GAS_APP_URL = "https://script.google.com/macros/s/AKfycbwfrvMHobcqELJknZzUButaPCZhnWQQbNyYldC_UIHcwQEzgLplcrhaz8lbkApHyvAB/exec"
+def load_config():
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    for fname in ['config.json', 'config.example.json']:
+        fpath = os.path.join(base_dir, fname)
+        if os.path.exists(fpath):
+            try:
+                with open(fpath, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            except Exception:
+                pass
+    return {}
+
+_cfg = load_config()
+GAS_APP_URL = _cfg.get("gas_app_url", "https://script.google.com/macros/s/AKfycbwfrvMHobcqELJknZzUButaPCZhnWQQbNyYldC_UIHcwQEzgLplcrhaz8lbkApHyvAB/exec")
 
 def make_xml_safe(html_str):
     """Make HTML safe for Blogger XML by fixing void elements, boolean attrs, and entities."""

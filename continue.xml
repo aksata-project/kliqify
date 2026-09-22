@@ -520,7 +520,7 @@
 
     <!-- Header -->
     <header class="header">
-        <a href="https://kliqify.cokroaksata.my.id" class="brand">
+        <a href="/" class="brand">
             <i class="fas fa-link"></i>
             Kliqify
         </a>
@@ -543,7 +543,7 @@
             </div>
             <h2>Shortlink Tidak Ditemukan</h2>
             <p id="error-message">Link yang Anda cari tidak tersedia atau sudah kedaluwarsa.</p>
-            <a href="https://kliqify.cokroaksata.my.id" class="btn-back">
+            <a href="/" class="btn-back">
                 <i class="fas fa-arrow-left"></i>
                 Kembali ke Beranda
             </a>
@@ -607,8 +607,8 @@
     <!-- Footer -->
     <footer class="footer">
         <p>&#169; 2025 Kliqify &#183;
-            <a href="https://kliqify.cokroaksata.my.id">Beranda</a> &#183;
-            <a href="https://kliqify.cokroaksata.my.id/p/privacypolicy.html">Kebijakan Privasi</a>
+            <a href="/">Beranda</a> &#183;
+            <a href="/p/privacypolicy.html">Kebijakan Privasi</a>
         </p>
     </footer>
 
@@ -621,7 +621,7 @@
             // === CONFIG ===
             const TOTAL_STEPS = 5;
             const WAIT_SECONDS = 5; // countdown per step
-            const LANDING_URL = 'https://kliqify.cokroaksata.my.id';
+            const LANDING_URL = (window.location.origin && window.location.origin !== 'null') ? window.location.origin : 'https://kliqify.my.id';
             const GAS_APP_URL = 'https://script.google.com/macros/s/AKfycbwfrvMHobcqELJknZzUButaPCZhnWQQbNyYldC_UIHcwQEzgLplcrhaz8lbkApHyvAB/exec';
 
             // === FUN MESSAGE POOLS ===

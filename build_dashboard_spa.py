@@ -1,11 +1,25 @@
 import os
 import re
+import json
 import base64
 import urllib.parse
 
-# Web App URL placeholder
-GAS_APP_URL = "https://script.google.com/macros/s/AKfycbwfrvMHobcqELJknZzUButaPCZhnWQQbNyYldC_UIHcwQEzgLplcrhaz8lbkApHyvAB/exec"
-LOGIN_PAGE_URL = "https://kliqify.cokroaksata.my.id"
+def load_config():
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    for fname in ['config.json', 'config.example.json']:
+        fpath = os.path.join(base_dir, fname)
+        if os.path.exists(fpath):
+            try:
+                with open(fpath, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            except Exception:
+                pass
+    return {}
+
+_cfg = load_config()
+GAS_APP_URL = _cfg.get("gas_app_url", "https://script.google.com/macros/s/AKfycbwfrvMHobcqELJknZzUButaPCZhnWQQbNyYldC_UIHcwQEzgLplcrhaz8lbkApHyvAB/exec")
+APP_URL = _cfg.get("app_url", "https://kliqify.my.id")
+LOGIN_PAGE_URL = APP_URL
 
 def obfuscate_js(js_code):
     js_code = js_code.strip()
@@ -53,8 +67,8 @@ def make_xml_safe(html_str):
 def process_gas_variables(content, is_html_context=True):
     if is_html_context:
         # Handle dynamic variables in HTML text or attributes
-        content = re.sub(r'<\?= appUrl \?>', 'https://kliqify.cokroaksata.my.id', content)
-        content = re.sub(r'<\?= data\.appUrl \?>', 'https://kliqify.cokroaksata.my.id', content)
+        content = re.sub(r'<\?= appUrl \?>', APP_URL, content)
+        content = re.sub(r'<\?= data\.appUrl \?>', APP_URL, content)
         
         # Username and Name displays
         content = content.replace('<?= userData.Username ?>', '<span class="kliqify-username-display"></span>')
@@ -85,10 +99,10 @@ def process_gas_variables(content, is_html_context=True):
         # General cleanup of any remaining tags
         content = re.sub(r'<\?.*?\?>', '', content, flags=re.DOTALL)
     else:
-        content = re.sub(r'[\'"]\<\?= appUrl \?\>[\'"]', r"'https://kliqify.cokroaksata.my.id'", content)
-        content = re.sub(r'[\'"]\<\?= data\.appUrl \?\>[\'"]', r"'https://kliqify.cokroaksata.my.id'", content)
-        content = re.sub(r'<\?= appUrl \?>', r"'https://kliqify.cokroaksata.my.id'", content)
-        content = re.sub(r'<\?= data\.appUrl \?>', r"'https://kliqify.cokroaksata.my.id'", content)
+        content = re.sub(r'[\'"]\<\?= appUrl \?\>[\'"]', f"'{APP_URL}'", content)
+        content = re.sub(r'[\'"]\<\?= data\.appUrl \?\>[\'"]', f"'{APP_URL}'", content)
+        content = re.sub(r'<\?= appUrl \?>', f"'{APP_URL}'", content)
+        content = re.sub(r'<\?= data\.appUrl \?>', f"'{APP_URL}'", content)
         content = content.replace('<?= userData.Username ?>', '"+(localStorage.getItem("kliqify_username") || "")+"')
         content = content.replace('<?= userData.Nama ?>', '"+(localStorage.getItem("kliqify_username") || "")+"')
         content = re.sub(r'<\?= isAdmin \?>', 'false', content)

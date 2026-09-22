@@ -3545,7 +3545,7 @@
 
     // --- VARIABLES ---
 
-    const appUrl = "https://kliqify.cokroaksata.my.id";
+    const appUrl = (window.location.origin && window.location.origin !== 'null') ? window.location.origin : "https://kliqify.my.id";
 
     const username = localStorage.getItem("kliqify_username") || "";
 

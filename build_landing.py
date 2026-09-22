@@ -1,11 +1,25 @@
 import os
 import re
+import json
 import base64
 import urllib.parse
 
-# Web App URL placeholder
-GAS_APP_URL = "https://script.google.com/macros/s/AKfycbwfrvMHobcqELJknZzUButaPCZhnWQQbNyYldC_UIHcwQEzgLplcrhaz8lbkApHyvAB/exec"
-LOGIN_PAGE_URL = "https://dashboard.kliqify.my.id/user-kliqify?page=login" # Redirects unauthorized users/logouts here
+def load_config():
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    for fname in ['config.json', 'config.example.json']:
+        fpath = os.path.join(base_dir, fname)
+        if os.path.exists(fpath):
+            try:
+                with open(fpath, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            except Exception:
+                pass
+    return {}
+
+_cfg = load_config()
+GAS_APP_URL = _cfg.get("gas_app_url", "https://script.google.com/macros/s/AKfycbwfrvMHobcqELJknZzUButaPCZhnWQQbNyYldC_UIHcwQEzgLplcrhaz8lbkApHyvAB/exec")
+APP_URL = _cfg.get("app_url", "https://kliqify.my.id")
+LOGIN_PAGE_URL = f"{APP_URL}?page=login" # Redirects unauthorized users/logouts here
 
 FILES_TO_CONVERT = [
     'landingpage.html'
@@ -56,8 +70,8 @@ def make_xml_safe(html_str):
     return html_str
 
 def process_html_variables(content):
-    content = re.sub(r'<\?= appUrl \?>', 'https://dashboard.kliqify.my.id/user-kliqify', content)
-    content = re.sub(r'<\?= data\.appUrl \?>', 'https://dashboard.kliqify.my.id/user-kliqify', content)
+    content = re.sub(r'<\?= appUrl \?>', APP_URL, content)
+    content = re.sub(r'<\?= data\.appUrl \?>', APP_URL, content)
     content = content.replace('<?= userData.Username ?>', '<span class="kliqify-username-display"></span>')
     content = content.replace('<?= userData.Nama ?>', '<span class="kliqify-username-display"></span>')
     content = re.sub(r'<\?\s*if\s*\(userData\s*&&\s*userData\.UserType.*?\)\s*\{\s*\?>', '', content, flags=re.IGNORECASE | re.DOTALL)
@@ -66,10 +80,10 @@ def process_html_variables(content):
     return content
 
 def process_js_variables(content):
-    content = re.sub(r'[\'"]\<\?= appUrl \?\>[\'"]', r"'https://dashboard.kliqify.my.id/user-kliqify'", content)
-    content = re.sub(r'[\'"]\<\?= data\.appUrl \?\>[\'"]', r"'https://dashboard.kliqify.my.id/user-kliqify'", content)
-    content = re.sub(r'<\?= appUrl \?>', r"'https://dashboard.kliqify.my.id/user-kliqify'", content)
-    content = re.sub(r'<\?= data\.appUrl \?>', r"'https://dashboard.kliqify.my.id/user-kliqify'", content)
+    content = re.sub(r'[\'"]\<\?= appUrl \?\>[\'"]', f"'{APP_URL}'", content)
+    content = re.sub(r'[\'"]\<\?= data\.appUrl \?\>[\'"]', f"'{APP_URL}'", content)
+    content = re.sub(r'<\?= appUrl \?>', f"'{APP_URL}'", content)
+    content = re.sub(r'<\?= data\.appUrl \?>', f"'{APP_URL}'", content)
     decode_js = '(function(w){let u=(new URLSearchParams(w.search)).get("user");if(!u)return"";try{return atob(u)}catch(e){return u;}})(window.location)'
     content = content.replace('<?= userData.Username ?>', f'"+({decode_js} || localStorage.getItem("kliqify_username") || "")+"')
     content = content.replace('<?= userData.Nama ?>', f'"+({decode_js} || localStorage.getItem("kliqify_username") || "")+"')

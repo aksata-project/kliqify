@@ -1766,11 +1766,11 @@ eval(decodeURIComponent(window.atob('Y29uc3QlMjBHQVNfQVBQX1VSTCUyMCUzRCUyMCUyMmh
                 <a onclick="navigateTo('home', 'how-it-works'); toggleMobileMenu();" class="nav-link">Cara Kerja</a>
                 <a onclick="navigateTo('home', 'earnings'); toggleMobileMenu();" class="nav-link">Penghasilan</a>
                 <!-- Guest only -->
-                <a href="https://dashboard.kliqify.my.id/user-kliqify?page=register" class="nav-link nav-guest-only">Daftar</a>
-                <a href="https://dashboard.kliqify.my.id/user-kliqify?page=login" class="btn btn-primary nav-guest-only"><i
+                <a href="https://kliqify.my.id?page=register" class="nav-link nav-guest-only">Daftar</a>
+                <a href="https://kliqify.my.id?page=login" class="btn btn-primary nav-guest-only"><i
                         class="fas fa-arrow-right"></i> Mulai</a>
                 <!-- Logged-in only -->
-                <a href="https://dashboard.kliqify.my.id/user-kliqify?page=dashboard" class="nav-user-btn nav-loggedin-only" id="navUserBtn"
+                <a href="https://kliqify.my.id?page=dashboard" class="nav-user-btn nav-loggedin-only" id="navUserBtn"
                     style="display:none;">
                     <i class="fas fa-user-circle"></i> <span id="navUserName">User</span>
                 </a>
@@ -1795,7 +1795,7 @@ eval(decodeURIComponent(window.atob('Y29uc3QlMjBHQVNfQVBQX1VSTCUyMCUzRCUyMCUyMmh
                     <p>Pendekkan link, bagikan ke audiens Anda, dan dapatkan bayaran untuk setiap klik. Dipercaya ribuan
                         kreator konten dan pemasar digital.</p>
                     <div class="hero-buttons">
-                        <a href="https://dashboard.kliqify.my.id/user-kliqify?page=login" class="btn btn-primary"><i class="fas fa-rocket"></i>
+                        <a href="https://kliqify.my.id?page=login" class="btn btn-primary"><i class="fas fa-rocket"></i>
                             Mulai</a>
                         <a onclick="navigateTo('home', 'how-it-works')" class="btn btn-outline"><i
                                 class="fas fa-play-circle"></i> Cara Kerja</a>
@@ -1841,7 +1841,7 @@ eval(decodeURIComponent(window.atob('Y29uc3QlMjBHQVNfQVBQX1VSTCUyMCUzRCUyMCUyMmh
                             <div class="dot" style="background:#10b981"></div>
                             <div class="preview-url-bar">
                                 <i class="fas fa-lock" style="color:#10b981;font-size:9px"></i>
-                                <span>dashboard.kliqify.my.id</span>
+                                <span>kliqify.my.id</span>
                             </div>
                         </div>
                         <!-- Stats row -->
@@ -2009,7 +2009,7 @@ eval(decodeURIComponent(window.atob('Y29uc3QlMjBHQVNfQVBQX1VSTCUyMCUzRCUyMCUyMmh
                 <div class="cta-box">
                     <h2>Siap Menghasilkan dari Setiap Link?</h2>
                     <p>Bergabung dengan ribuan kreator yang sudah menikmati penghasilan pasif dari Kliqify.</p>
-                    <a href="https://dashboard.kliqify.my.id/user-kliqify?page=login" class="btn btn-white"><i class="fas fa-rocket"></i> Mulai
+                    <a href="https://kliqify.my.id?page=login" class="btn btn-white"><i class="fas fa-rocket"></i> Mulai
                         Sekarang</a>
                 </div>
             </div>
@@ -2152,7 +2152,7 @@ eval(decodeURIComponent(window.atob('Y29uc3QlMjBHQVNfQVBQX1VSTCUyMCUzRCUyMCUyMmh
                         <li><a onclick="navigateTo('home')">Beranda</a></li>
                         <li><a onclick="navigateTo('home', 'features')">Fitur</a></li>
                         <li><a onclick="navigateTo('home', 'earnings')">Rate CPM</a></li>
-                        <li><a href="https://dashboard.kliqify.my.id/user-kliqify?page=login">Mulai</a></li>
+                        <li><a href="https://kliqify.my.id?page=login">Mulai</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">

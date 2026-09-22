@@ -1191,7 +1191,7 @@
                         // Cross-domain sync: redirect through GAS domain to set localStorage there,
                         // then GAS redirects back to the Blogger dashboard
                         const syncUser = res.userData && res.userData.Username ? res.userData.Username : user;
-                        const gasUrl = (typeof appUrl !== 'undefined' && appUrl) ? appUrl : 'https://kliqify.cokroaksata.my.id';
+                        const gasUrl = (typeof appUrl !== 'undefined' && appUrl) ? appUrl : ((window.location.origin && window.location.origin !== 'null') ? window.location.origin : 'https://kliqify.my.id');
                         const dashboardUrl = window.location.origin + '/';
 
                         CustomAlert.show('Login Berhasil!', 'Klik OK untuk melanjutkan ke Dashboard.', 'success')
